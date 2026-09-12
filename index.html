@@ -1,0 +1,2071 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RubixWorld — Minecraft Server</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link id="dynFavicon" rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' fill='%230a0708'/><text x='50%25' y='54%25' font-size='34' font-family='sans-serif' font-weight='900' fill='%23D500FF' text-anchor='middle' dominant-baseline='middle'>RW</text></svg>">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style id="rwLiveVars"></style>
+<style id="rwCustomCSS"></style>
+<style>
+  :root{
+    --bg:#0a0708;--border:#1e1618;--border-2:#2a1f21;
+    --accent:#D500FF;--accent-2:#E93FFF;--cyan:#00E5FF;
+    --grad:linear-gradient(90deg,#D500FF,#00E5FF);
+    --grad-v:linear-gradient(180deg,#D500FF,#00E5FF);
+    --red:#D500FF;--red-2:#E93FFF;
+    --text:#f5f5f5;--muted:#8a8a8a;--muted-2:#5a5254;
+    --green:#22c55e;--yellow:#e8b23a;--gold:#e8b23a;
+    --radius:0px;--border-w:1px;--panel-op:.98;--anim:1;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);
+    line-height:1.5;overflow-x:hidden;-webkit-font-smoothing:antialiased;}
+  body.show-borders *{outline:1px solid rgba(255,0,80,.5)!important;}
+  body.show-grid::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9998;
+    background-image:linear-gradient(rgba(213,0,255,.12) 1px,transparent 1px),
+      linear-gradient(90deg,rgba(213,0,255,.12) 1px,transparent 1px);
+    background-size:40px 40px;}
+  body.panel-open{overflow:hidden;}
+  .mono{font-family:'JetBrains Mono',monospace;}
+  body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+    background:radial-gradient(ellipse 60% 50% at 15% 100%,rgba(213,0,255,.14),transparent 70%),
+      radial-gradient(ellipse 50% 40% at 90% 90%,rgba(0,229,255,.10),transparent 70%);}
+  body.no-glow::before{display:none;}
+  .wrap{position:relative;z-index:1;}
+
+  nav{position:fixed;top:0;left:0;right:0;z-index:100;
+    background:rgba(10,7,8,.85);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+    border-bottom:1px solid var(--border);padding:18px 48px;
+    display:flex;justify-content:space-between;align-items:center;}
+  .brand{display:flex;align-items:center;gap:14px;text-decoration:none;color:var(--text);
+    background:none;border:none;cursor:pointer;font-family:inherit;}
+  .brand-box{border:2px solid var(--accent);color:var(--accent);font-weight:900;
+    font-size:13px;letter-spacing:1px;padding:3px 6px;line-height:1;
+    transition:.2s;user-select:none;}
+  .brand:hover .brand-box{box-shadow:0 0 14px rgba(213,0,255,.5);}
+  .brand-name{font-weight:900;font-size:15px;letter-spacing:3px;}
+  .nav-links{display:flex;align-items:center;gap:38px;list-style:none;}
+  .nav-links a{color:var(--text);text-decoration:none;font-size:12px;font-weight:700;
+    letter-spacing:2px;transition:.2s;text-transform:uppercase;cursor:pointer;}
+  .nav-links a:hover,.nav-links a.active{color:var(--accent);}
+  .nav-btn{background:var(--grad);color:#fff!important;padding:14px 26px;
+    font-size:12px;font-weight:800;letter-spacing:2px;text-transform:uppercase;transition:.2s;}
+  .nav-btn:hover{filter:brightness(1.15);box-shadow:0 0 20px rgba(213,0,255,.4);}
+  .burger{display:none;background:none;border:none;color:#fff;font-size:24px;cursor:pointer;}
+
+  .page{display:none;}
+  .page.active{display:block;}
+  #page-admin{display:none;}
+  #page-admin.active{display:block;}
+
+  .hero{padding:170px 48px 90px;max-width:1440px;margin:0 auto;
+    display:grid;grid-template-columns:1.1fr 1fr;gap:80px;align-items:center;min-height:100vh;}
+  .eyebrow{display:flex;align-items:center;gap:12px;font-family:'JetBrains Mono',monospace;
+    font-size:12px;letter-spacing:3px;color:var(--muted);margin-bottom:32px;text-transform:uppercase;}
+  .eyebrow::before{content:'';width:3px;height:14px;background:var(--grad-v);}
+  .hero-title{font-weight:900;font-size:clamp(60px,9vw,140px);
+    line-height:.92;letter-spacing:-3px;margin-bottom:36px;}
+  .hero-title .white{color:#fff;display:block;}
+  .hero-title .red{display:block;background:var(--grad);
+    -webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;}
+  body.no-gradient-title .hero-title .red{background:none;
+    -webkit-text-fill-color:var(--accent);color:var(--accent);}
+  .hero-desc{color:#c9c2c4;font-size:16px;max-width:520px;margin-bottom:44px;line-height:1.7;}
+  .btn-primary{display:inline-flex;align-items:center;gap:12px;background:transparent;
+    border:1px solid var(--border-2);color:#fff;text-decoration:none;padding:16px 24px;
+    font-size:12px;font-weight:800;letter-spacing:2px;text-transform:uppercase;
+    transition:.2s;cursor:pointer;font-family:inherit;}
+  .btn-primary:hover{border-color:var(--accent);color:var(--accent);background:rgba(213,0,255,.05);}
+  .btn-primary .ico{color:var(--accent);font-size:16px;}
+  .hero-status{display:flex;align-items:center;gap:16px;margin-top:80px;
+    font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:3px;
+    color:var(--muted);text-transform:uppercase;flex-wrap:wrap;}
+  .hero-status .dot{width:8px;height:8px;border-radius:50%;background:var(--green);
+    box-shadow:0 0 10px var(--green);display:inline-block;margin-right:8px;}
+  .hero-status .sep{color:var(--muted-2);}
+
+  .monitor{background:linear-gradient(180deg,#0d0a0b,#0a0708);
+    border:1px solid var(--border-2);position:relative;aspect-ratio:1/1;
+    display:flex;flex-direction:column;max-width:640px;width:100%;
+    justify-self:end;box-shadow:0 0 60px rgba(213,0,255,.10);}
+  .monitor-head{display:flex;justify-content:space-between;align-items:center;
+    padding:16px 20px;font-family:'JetBrains Mono',monospace;font-size:10px;
+    letter-spacing:2px;color:var(--muted);text-transform:uppercase;
+    border-bottom:1px solid var(--border);}
+  .monitor-head .live{color:var(--accent);display:flex;align-items:center;gap:6px;}
+  .monitor-head .live::before{content:'';width:6px;height:6px;background:var(--accent);
+    border-radius:50%;box-shadow:0 0 8px var(--accent);animation:pulse 2s infinite;}
+  @keyframes pulse{0%,100%{opacity:1;}50%{opacity:.4;}}
+  .monitor-body{flex:1;position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden;}
+  .monitor-body .label{position:absolute;top:16px;right:20px;
+    font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;
+    color:var(--muted-2);text-transform:uppercase;}
+  .radar{position:relative;width:78%;aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;}
+  .ring{position:absolute;border:1px solid rgba(213,0,255,.35);border-radius:50%;}
+  .ring.r1{width:55%;height:55%;}
+  .ring.r2{width:80%;height:80%;transform:rotate(35deg);opacity:.5;border-color:rgba(213,0,255,.25);}
+  .ring.r3{width:100%;height:100%;transform:rotate(-25deg);opacity:.35;border-color:rgba(0,229,255,.22);}
+  .ring.r4{width:95%;height:95%;transform:rotate(20deg);border-color:rgba(213,0,255,.15);opacity:.6;}
+  .ellipse{position:absolute;border:1px solid rgba(213,0,255,.25);border-radius:50%;
+    width:100%;height:70%;transform:rotate(-30deg);}
+  .ellipse.e2{transform:rotate(50deg);width:90%;height:60%;opacity:.5;border-color:rgba(0,229,255,.25);}
+  .radar-center{position:relative;text-align:center;z-index:2;}
+  .radar-center .zone{font-family:'JetBrains Mono',monospace;font-size:10px;
+    letter-spacing:6px;color:var(--muted);margin-bottom:6px;}
+  .radar-center .num{font-size:clamp(46px,6vw,72px);font-weight:900;color:#fff;line-height:1;letter-spacing:-2px;}
+  .radar-center .num::after{content:'';display:block;width:8px;height:8px;
+    background:var(--grad);border-radius:50%;margin:12px auto 0;
+    box-shadow:0 0 14px rgba(213,0,255,.9),0 0 22px rgba(0,229,255,.5);}
+  .monitor-stats{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--border);}
+  .mstat{padding:16px 18px;border-right:1px solid var(--border);}
+  .mstat:last-child{border-right:none;}
+  .mstat .k{display:block;font-family:'JetBrains Mono',monospace;font-size:9px;
+    letter-spacing:2px;color:var(--muted-2);text-transform:uppercase;margin-bottom:6px;}
+  .mstat .v{font-size:12px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:#fff;}
+  .monitor-foot{display:flex;justify-content:space-between;align-items:center;
+    padding:12px 20px;border-top:1px solid var(--border);
+    font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;
+    color:var(--muted-2);text-transform:uppercase;}
+
+  .section{max-width:1440px;margin:0 auto;padding:100px 48px;}
+  .sec-head{display:flex;justify-content:space-between;align-items:flex-end;
+    padding-bottom:28px;border-bottom:1px solid var(--border);margin-bottom:44px;gap:24px;}
+  .sec-title{font-size:clamp(26px,3.4vw,42px);font-weight:900;letter-spacing:-1px;text-transform:uppercase;}
+  .sec-label{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:3px;
+    color:var(--muted);text-transform:uppercase;padding-bottom:6px;}
+  .sec-eyebrow{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:3px;
+    color:var(--accent);text-transform:uppercase;margin-bottom:14px;display:block;}
+  .status-row{display:grid;grid-template-columns:1.4fr 1fr 1fr;
+    border:1px solid var(--border-2);background:linear-gradient(180deg,#0d0a0b,#0a0708);}
+  .status-cell{padding:34px 32px;border-right:1px solid var(--border);
+    display:flex;flex-direction:column;justify-content:center;min-height:130px;}
+  .status-cell:last-child{border-right:none;}
+  .status-cell .head{display:flex;align-items:center;gap:14px;margin-bottom:8px;}
+  .status-cell .head .dot{width:10px;height:10px;border-radius:50%;background:var(--green);
+    box-shadow:0 0 14px var(--green);transition:.3s;}
+  .status-cell .head strong{font-size:18px;font-weight:900;letter-spacing:1px;text-transform:uppercase;}
+  .status-cell .sub{font-family:'JetBrains Mono',monospace;font-size:11px;
+    letter-spacing:1.5px;color:var(--muted);text-transform:uppercase;padding-left:24px;}
+  .status-cell .big{font-size:22px;font-weight:900;color:#fff;letter-spacing:2px;margin-bottom:8px;}
+  .status-cell .k{font-family:'JetBrains Mono',monospace;font-size:11px;
+    letter-spacing:2px;color:var(--muted);text-transform:uppercase;}
+
+  .cards{display:grid;grid-template-columns:1fr 1fr;gap:0;
+    border:1px solid var(--border-2);background:linear-gradient(180deg,#0d0a0b,#0a0708);}
+  .pcard{padding:44px 40px 40px;border-right:1px solid var(--border);
+    display:flex;flex-direction:column;text-decoration:none;color:inherit;
+    transition:.25s;position:relative;min-height:280px;cursor:pointer;}
+  .pcard:last-child{border-right:none;}
+  .pcard:hover{background:#0f0a0c;}
+  .pcard .icon{width:52px;height:52px;border:1px solid var(--border-2);
+    display:flex;align-items:center;justify-content:center;font-size:22px;
+    color:var(--accent);margin-bottom:30px;transition:.25s;}
+  .pcard:hover .icon{border-color:var(--accent);box-shadow:0 0 20px rgba(213,0,255,.25);color:var(--accent-2);}
+  .pcard h3{font-size:22px;font-weight:900;letter-spacing:.5px;text-transform:uppercase;margin-bottom:16px;}
+  .pcard p{color:var(--muted);font-size:14px;line-height:1.65;margin-bottom:auto;}
+  .pcard .open{margin-top:32px;font-family:'JetBrains Mono',monospace;
+    font-size:11px;letter-spacing:2.5px;color:var(--accent);
+    text-transform:uppercase;font-weight:700;transition:.2s;}
+  .pcard:hover .open{color:var(--accent-2);letter-spacing:3.5px;}
+
+  .page-inner{max-width:1000px;margin:0 auto;padding:150px 24px 100px;}
+  .page-inner.narrow{max-width:960px;}
+  .tab-bar{display:flex;gap:8px;margin-bottom:70px;flex-wrap:wrap;}
+  .tab{display:inline-flex;align-items:center;gap:8px;padding:12px 20px;
+    border:1px solid var(--border-2);background:transparent;color:var(--muted);
+    font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:2px;
+    text-transform:uppercase;font-weight:600;text-decoration:none;transition:.2s;cursor:pointer;}
+  .tab:hover{color:#fff;border-color:#3a2a3e;}
+  .tab.tab-active{color:var(--accent);border-color:var(--accent);}
+  .eyebrow-center{display:flex;align-items:center;justify-content:center;gap:10px;
+    font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:3px;
+    color:var(--muted);text-transform:uppercase;margin-bottom:24px;}
+  .eyebrow-center::before{content:'';width:3px;height:12px;background:var(--grad-v);}
+  .page-title{text-align:center;font-size:clamp(46px,7.5vw,96px);font-weight:900;
+    letter-spacing:-2px;line-height:1;margin-bottom:26px;color:#fff;text-transform:uppercase;}
+  .page-sub{text-align:center;color:var(--muted);font-size:15px;line-height:1.7;
+    max-width:560px;margin:0 auto 60px;}
+
+  .steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-bottom:60px;}
+  .step{border:1px solid var(--border-2);background:linear-gradient(180deg,#0d0a0b,#0a0708);
+    padding:26px 22px;position:relative;}
+  .step-num{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:2px;
+    color:var(--accent);font-weight:700;margin-bottom:12px;}
+  .step h4{font-size:15px;font-weight:800;color:#fff;margin-bottom:10px;line-height:1.4;}
+  .step p{color:var(--muted);font-size:13px;line-height:1.6;}
+  .step code{font-family:'JetBrains Mono',monospace;color:var(--cyan);
+    background:rgba(0,229,255,.08);padding:2px 6px;font-size:12px;}
+
+  .group{border:1px solid var(--border-2);background:linear-gradient(180deg,#0d0a0b,#0a0708);
+    margin-bottom:22px;overflow:hidden;}
+  .group-head{display:flex;align-items:center;gap:14px;padding:18px 24px;
+    border-bottom:1px solid var(--border);background:linear-gradient(180deg,#130d14,#0d0a0b);}
+  .group-icon{font-size:15px;line-height:1;}
+  .group-title{font-size:13px;font-weight:800;letter-spacing:2.5px;text-transform:uppercase;color:#fff;}
+  .group-body{display:grid;grid-template-columns:1fr 1fr;}
+  .role{padding:24px 26px;border-right:1px solid var(--border);border-bottom:1px solid var(--border);
+    min-height:130px;display:flex;flex-direction:column;}
+  .group-body > .role:nth-child(2n){border-right:none;}
+  .group-body > .role:nth-last-child(-n+2){border-bottom:none;}
+  .role-num{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:2.5px;
+    color:var(--accent);text-transform:uppercase;font-weight:700;margin-bottom:12px;}
+  .role-name{font-size:18px;font-weight:800;color:#fff;letter-spacing:.2px;margin-bottom:auto;line-height:1.3;}
+  .role-players{margin-top:14px;display:flex;flex-wrap:wrap;gap:6px;align-items:center;}
+  .role-player{font-size:13px;color:#c9c2c4;}
+  .role-player-chip{display:inline-block;padding:5px 11px;border:1px solid var(--border-2);
+    font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.3px;
+    color:#c9c2c4;background:rgba(255,255,255,.015);transition:.2s;}
+  .role-player-chip:hover{border-color:var(--accent);color:#fff;box-shadow:0 0 12px rgba(213,0,255,.25);}
+  .role-empty{font-style:italic;color:var(--muted-2);font-size:13px;}
+
+  .info-panel{border:1px solid var(--border-2);
+    background:linear-gradient(180deg,#0d0a0b,#0a0708) padding-box,
+      linear-gradient(180deg,#D500FF,#00E5FF) border-box;
+    position:relative;margin-bottom:22px;}
+  .info-panel::before{content:'';position:absolute;left:-1px;top:0;bottom:0;width:3px;
+    background:linear-gradient(180deg,var(--accent),var(--cyan));}
+  .info-head{display:flex;align-items:center;gap:16px;padding:22px 30px;border-bottom:1px solid var(--border);}
+  .info-head .icon{width:44px;height:44px;border:1px solid var(--border-2);
+    display:flex;align-items:center;justify-content:center;font-size:20px;
+    color:var(--accent);flex-shrink:0;}
+  .info-head h2{font-size:19px;font-weight:900;letter-spacing:1px;color:#fff;
+    text-transform:uppercase;margin-bottom:3px;line-height:1.25;}
+  .info-head .kicker{font-family:'JetBrains Mono',monospace;font-size:9px;
+    letter-spacing:2.5px;color:var(--muted-2);text-transform:uppercase;}
+  .info-body{padding:30px;}
+  .welcome{font-size:15px;color:#c9c2c4;margin-bottom:26px;line-height:1.65;}
+  .welcome b{color:#fff;font-weight:700;}
+  .quote-block{padding:32px 30px;margin-bottom:26px;position:relative;}
+  .quote-block::before,.quote-block::after{content:'';position:absolute;left:0;right:0;height:1px;
+    background:repeating-linear-gradient(90deg,var(--border-2) 0 6px,transparent 6px 12px);}
+  .quote-block::before{top:0;}
+  .quote-block::after{bottom:0;}
+  .quote-title{display:flex;align-items:center;justify-content:center;gap:14px;
+    font-size:19px;font-weight:900;letter-spacing:1px;color:#fff;
+    text-transform:uppercase;text-align:center;margin-bottom:22px;line-height:1.3;}
+  .quote-title .ic{font-size:18px;color:var(--accent);opacity:.95;}
+  .quote-text{font-size:14px;color:#b6b0b2;line-height:1.7;}
+  .quote-text b{color:#fff;font-weight:700;}
+  .mini-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+  .mini{border:1px solid var(--border-2);background:linear-gradient(180deg,#0e0b0c,#0b0809);
+    padding:22px 22px 24px;min-height:110px;display:flex;flex-direction:column;transition:.2s;}
+  .mini:hover{border-color:rgba(213,0,255,.35);box-shadow:0 0 18px rgba(213,0,255,.10);}
+  .mini .k{font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:2.5px;
+    color:var(--muted-2);text-transform:uppercase;margin-bottom:14px;font-weight:600;}
+  .mini .v{font-size:16px;font-weight:800;color:#fff;letter-spacing:.2px;line-height:1.4;margin-top:auto;}
+
+  .ip-bar{border:1px solid var(--border-2);background:linear-gradient(180deg,#0e0b0c,#0b0809);
+    padding:22px 26px;display:flex;align-items:center;gap:20px;flex-wrap:wrap;
+    margin-bottom:16px;transition:.2s;}
+  .ip-bar:hover{border-color:rgba(213,0,255,.35);}
+  .ip-bar .ip-label{font-family:'JetBrains Mono',monospace;font-size:10px;
+    letter-spacing:2.5px;color:var(--muted-2);text-transform:uppercase;font-weight:600;width:100%;}
+  .ip-bar .ip-value{font-family:'JetBrains Mono',monospace;font-size:20px;
+    color:#fff;font-weight:700;letter-spacing:1px;flex:1;min-width:200px;}
+  .ip-bar .ip-copy{background:transparent;border:1px solid var(--border-2);color:var(--accent);
+    font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:2px;
+    text-transform:uppercase;padding:10px 18px;cursor:pointer;transition:.2s;font-weight:700;}
+  .ip-bar .ip-copy:hover{border-color:var(--accent);color:#fff;background:rgba(213,0,255,.08);}
+  .info-top-row{display:grid;grid-template-columns:2fr 1fr;gap:16px;margin-bottom:22px;}
+  .status-card{border:1px solid var(--border-2);background:linear-gradient(180deg,#0e0b0c,#0b0809);
+    padding:22px 26px;display:flex;flex-direction:column;justify-content:center;transition:.2s;}
+  .status-card .k{font-family:'JetBrains Mono',monospace;font-size:10px;
+    letter-spacing:2.5px;color:var(--muted-2);text-transform:uppercase;font-weight:600;margin-bottom:14px;}
+  .status-card .status-line{display:flex;align-items:center;gap:14px;}
+  .status-card .status-dot{width:14px;height:14px;border-radius:50%;background:var(--green);
+    box-shadow:0 0 16px var(--green);flex-shrink:0;transition:.3s;}
+  .status-card .status-text{font-size:17px;font-weight:800;color:#fff;letter-spacing:1px;text-transform:uppercase;}
+
+  .socials-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+  .social-card{display:flex;align-items:center;gap:14px;padding:20px 22px;
+    border:1px solid var(--border-2);background:linear-gradient(180deg,#0e0b0c,#0b0809);
+    text-decoration:none;color:inherit;transition:.25s;}
+  .social-card:hover{border-color:var(--accent);background:rgba(213,0,255,.04);transform:translateY(-3px);}
+  .social-card .social-icon{width:44px;height:44px;display:flex;align-items:center;
+    justify-content:center;font-size:22px;flex-shrink:0;
+    border:1px solid var(--border-2);transition:.25s;}
+  .social-card:hover .social-icon{border-color:var(--accent);}
+  .social-card .social-name{font-size:15px;font-weight:800;color:#fff;letter-spacing:.5px;line-height:1.2;}
+  .social-card .social-sub{font-family:'JetBrains Mono',monospace;font-size:10px;
+    letter-spacing:1.5px;color:var(--muted);text-transform:uppercase;margin-top:4px;}
+
+  .discord-widget-wrap{border:1px solid var(--border-2);
+    background:linear-gradient(180deg,#0e0b0c,#0b0809);
+    padding:20px;display:flex;justify-content:center;align-items:center;
+    position:relative;overflow:hidden;transition:.25s;}
+  .discord-widget-wrap::before{content:'';position:absolute;inset:0;
+    background:radial-gradient(ellipse 55% 60% at 50% 50%, rgba(88,101,242,.10), transparent 70%);
+    pointer-events:none;}
+  .discord-widget-wrap:hover{border-color:rgba(88,101,242,.5);
+    box-shadow:0 0 34px rgba(88,101,242,.18);}
+  .discord-widget-wrap iframe{display:block;width:100%;max-width:880px;height:340px;
+    border-radius:var(--radius);position:relative;z-index:1;background:#0e0b0c;}
+
+  .warn-bar{margin-top:26px;padding:16px 20px;border:1px solid var(--border-2);
+    background:linear-gradient(180deg,#0e0b0c,#0b0809);font-size:13.5px;
+    color:#c9c2c4;line-height:1.6;display:flex;gap:10px;align-items:flex-start;}
+  .warn-bar .w-ico{color:var(--gold);font-size:15px;flex-shrink:0;line-height:1.4;}
+  .warn-bar b{color:#fff;font-weight:700;}
+
+  footer{border-top:1px solid var(--border);background:#080506;padding:30px 48px;margin-top:40px;}
+  .footer-inner{max-width:1440px;margin:0 auto;display:flex;
+    justify-content:space-between;align-items:center;gap:24px;flex-wrap:wrap;}
+  footer .copy,footer .official{font-family:'JetBrains Mono',monospace;
+    font-size:10px;letter-spacing:2px;color:var(--muted-2);text-transform:uppercase;}
+  footer .official{letter-spacing:3px;}
+  footer .brand-name{font-size:13px;letter-spacing:3px;}
+
+  .maintenance{position:fixed;inset:0;z-index:9999;
+    background:linear-gradient(180deg,#0a0708,#0d0a0b);
+    display:none;align-items:center;justify-content:center;padding:24px;overflow-y:auto;}
+  .maintenance.show{display:flex;}
+  .maintenance::before{content:'';position:absolute;inset:0;pointer-events:none;
+    background:radial-gradient(ellipse 60% 60% at 50% 20%,rgba(213,0,255,.15),transparent 70%),
+      radial-gradient(ellipse 60% 50% at 50% 90%,rgba(0,229,255,.10),transparent 70%);}
+  .mnt-card{position:relative;z-index:1;max-width:720px;width:100%;
+    border:1px solid var(--border-2);background:rgba(13,10,11,.75);
+    backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+    padding:52px 44px;text-align:center;box-shadow:0 0 80px rgba(213,0,255,.15);}
+  .mnt-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;
+    background:linear-gradient(180deg,var(--accent),var(--cyan));}
+  .mnt-tag{display:inline-flex;align-items:center;gap:10px;
+    font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:3px;
+    color:var(--yellow);text-transform:uppercase;margin-bottom:24px;
+    padding:8px 16px;border:1px solid rgba(232,178,58,.4);background:rgba(232,178,58,.05);}
+  .mnt-tag::before{content:'';width:8px;height:8px;background:var(--yellow);
+    border-radius:50%;box-shadow:0 0 10px var(--yellow);animation:pulse 1.6s infinite;}
+  .mnt-title{font-size:clamp(28px,4vw,44px);font-weight:900;letter-spacing:-1px;
+    color:#fff;text-transform:uppercase;margin-bottom:18px;line-height:1.15;}
+  .mnt-sub{color:#c9c2c4;font-size:15px;line-height:1.7;max-width:520px;margin:0 auto 28px;}
+  .mnt-progress{height:4px;background:rgba(255,255,255,.06);border-radius:99px;
+    overflow:hidden;margin-bottom:32px;}
+  .mnt-progress i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--cyan));
+    width:40%;animation:slide 2.4s ease-in-out infinite;border-radius:99px;}
+  @keyframes slide{0%{transform:translateX(-100%);}100%{transform:translateX(300%);}}
+  .mnt-links{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:28px;}
+  .mnt-links a{display:inline-flex;align-items:center;gap:8px;padding:11px 18px;
+    border:1px solid var(--border-2);color:#c9c2c4;text-decoration:none;
+    font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:2px;
+    text-transform:uppercase;transition:.2s;}
+  .mnt-links a:hover{border-color:var(--accent);color:#fff;background:rgba(213,0,255,.06);}
+  .mnt-btn{display:inline-flex;align-items:center;gap:10px;background:var(--grad);
+    border:none;color:#fff;padding:15px 28px;font-family:inherit;font-size:12px;
+    font-weight:800;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:.2s;}
+  .mnt-btn:hover{filter:brightness(1.15);box-shadow:0 0 25px rgba(213,0,255,.4);}
+  .mnt-foot{margin-top:28px;font-family:'JetBrains Mono',monospace;
+    font-size:10px;letter-spacing:2px;color:var(--muted-2);text-transform:uppercase;}
+
+  .admin-page{padding:140px 24px 80px;max-width:1100px;margin:0 auto;}
+  .adm-header{margin-bottom:40px;}
+  .adm-h1{font-size:clamp(30px,5vw,56px);font-weight:900;letter-spacing:-1.5px;
+    color:#fff;text-transform:uppercase;line-height:1;margin-bottom:12px;}
+  .adm-h1 .grad{background:var(--grad);-webkit-background-clip:text;
+    background-clip:text;-webkit-text-fill-color:transparent;}
+  .adm-sub{color:var(--muted);font-size:14px;max-width:520px;line-height:1.65;}
+  .adm-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:18px;}
+  .adm-card{border:1px solid var(--border-2);background:linear-gradient(180deg,#0d0a0b,#0a0708);
+    padding:24px 22px;position:relative;transition:.2s;}
+  .adm-card:hover{border-color:rgba(213,0,255,.35);}
+  .adm-card-title{font-family:'JetBrains Mono',monospace;font-size:10px;
+    letter-spacing:2.5px;color:var(--accent);text-transform:uppercase;
+    font-weight:700;margin-bottom:18px;display:flex;align-items:center;gap:8px;}
+  .adm-card-title .num{display:inline-flex;align-items:center;justify-content:center;
+    width:20px;height:20px;border:1px solid var(--accent);font-size:10px;color:var(--accent);}
+  .adm-field{margin-bottom:12px;}
+  .adm-field:last-child{margin-bottom:0;}
+  .adm-label{display:block;font-size:12px;color:#c9c2c4;font-weight:500;margin-bottom:6px;}
+  .adm-input,.adm-select,.adm-textarea{width:100%;background:#0a0708;
+    border:1px solid var(--border-2);color:#fff;padding:10px 12px;
+    font-family:'JetBrains Mono',monospace;font-size:12px;
+    transition:.2s;outline:none;border-radius:var(--radius);}
+  .adm-input:focus,.adm-select:focus,.adm-textarea:focus{border-color:var(--accent);}
+  .adm-textarea{resize:vertical;min-height:80px;font-family:'Inter',sans-serif;font-size:13px;}
+  .adm-btn{display:inline-flex;align-items:center;gap:10px;justify-content:center;
+    width:100%;padding:12px 16px;border:1px solid var(--border-2);background:transparent;
+    color:#fff;font-family:inherit;font-size:12px;font-weight:700;
+    letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;
+    transition:.2s;margin-bottom:8px;border-radius:var(--radius);}
+  .adm-btn:last-child{margin-bottom:0;}
+  .adm-btn:hover{border-color:var(--accent);color:var(--accent);}
+  .adm-btn-primary{background:var(--grad);border:none;color:#fff;}
+  .adm-btn-primary:hover{filter:brightness(1.15);color:#fff;box-shadow:0 0 20px rgba(213,0,255,.35);}
+  .adm-btn-danger:hover{border-color:#ff3b3b;color:#ff3b3b;}
+  .adm-toggle{display:flex;align-items:center;justify-content:space-between;
+    padding:10px 0;font-size:13px;color:#c9c2c4;}
+  .adm-switch{position:relative;width:42px;height:22px;background:#1a1218;
+    border:1px solid var(--border-2);border-radius:99px;cursor:pointer;transition:.2s;flex-shrink:0;}
+  .adm-switch::after{content:'';position:absolute;left:2px;top:2px;
+    width:16px;height:16px;background:var(--muted);border-radius:50%;transition:.25s;}
+  .adm-switch.on{background:linear-gradient(90deg,var(--accent),var(--cyan));border-color:transparent;}
+  .adm-switch.on::after{left:22px;background:#fff;}
+  .adm-color-row{display:flex;align-items:center;justify-content:space-between;padding:8px 0;}
+  .adm-color-row label{font-size:12px;color:#c9c2c4;}
+  .adm-color-row input[type="color"]{-webkit-appearance:none;appearance:none;
+    width:44px;height:28px;background:transparent;border:1px solid var(--border-2);
+    cursor:pointer;padding:2px;}
+  .adm-color-row input[type="color"]::-webkit-color-swatch-wrapper{padding:0;}
+  .adm-color-row input[type="color"]::-webkit-color-swatch{border:none;}
+  .adm-presets{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:8px;}
+  .adm-preset{height:34px;border:1px solid var(--border-2);cursor:pointer;
+    transition:.2s;position:relative;overflow:hidden;}
+  .adm-preset:hover{border-color:#fff;transform:scale(1.05);}
+
+  .auth-box{background:linear-gradient(180deg,#0d0a0b,#0a0708);
+    border:1px solid var(--border-2);padding:32px 28px;max-width:420px;margin:0 auto 30px;}
+  .auth-box h3{font-family:'JetBrains Mono',monospace;font-size:13px;
+    letter-spacing:2.5px;color:var(--accent);text-transform:uppercase;
+    margin-bottom:20px;text-align:center;}
+  .auth-box .adm-field{margin-bottom:14px;}
+  .auth-status{font-family:'JetBrains Mono',monospace;font-size:11px;
+    letter-spacing:1.5px;text-align:center;margin-top:14px;
+    text-transform:uppercase;}
+  .auth-status.on{color:var(--green);}
+  .auth-status.off{color:var(--muted);}
+  .auth-user{font-family:'JetBrains Mono',monospace;font-size:12px;
+    color:var(--green);text-align:center;margin-bottom:14px;letter-spacing:1px;}
+
+  .dev-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.5);
+    backdrop-filter:blur(3px);opacity:0;pointer-events:none;transition:.3s;z-index:1000;}
+  .dev-backdrop.open{opacity:1;pointer-events:auto;}
+  .dev-panel{position:fixed;top:0;right:0;bottom:0;width:420px;max-width:100vw;
+    background:linear-gradient(180deg,#0d0a0b,#0a0708);
+    border-left:1px solid var(--border-2);transform:translateX(100%);
+    transition:transform .35s cubic-bezier(.4,0,.2,1);z-index:1001;
+    display:flex;flex-direction:column;box-shadow:-20px 0 60px rgba(0,0,0,.6);}
+  .dev-panel::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;
+    background:linear-gradient(180deg,var(--accent),var(--cyan));}
+  .dev-panel.open{transform:translateX(0);}
+  .dev-head{display:flex;justify-content:space-between;align-items:flex-start;
+    padding:20px 20px 18px;border-bottom:1px solid var(--border);}
+  .dev-title{display:flex;align-items:center;gap:10px;
+    font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;
+    letter-spacing:2.5px;color:#fff;text-transform:uppercase;}
+  .dev-pulse{width:8px;height:8px;border-radius:50%;background:var(--accent);
+    box-shadow:0 0 10px var(--accent);animation:pulse 1.6s infinite;}
+  .dev-sub{font-family:'JetBrains Mono',monospace;font-size:10px;
+    letter-spacing:2px;color:var(--muted-2);text-transform:uppercase;margin-top:6px;}
+  .dev-close{background:transparent;border:1px solid var(--border-2);color:var(--muted);
+    width:30px;height:30px;cursor:pointer;font-size:14px;transition:.2s;
+    font-family:inherit;display:flex;align-items:center;justify-content:center;}
+  .dev-close:hover{border-color:var(--accent);color:var(--accent);}
+  .dev-body{flex:1;overflow-y:auto;padding:8px 20px 28px;}
+  .dev-body::-webkit-scrollbar{width:6px;}
+  .dev-body::-webkit-scrollbar-track{background:transparent;}
+  .dev-body::-webkit-scrollbar-thumb{background:var(--border-2);}
+  .dev-sec{padding:16px 0;border-bottom:1px solid var(--border);}
+  .dev-sec:last-child{border-bottom:none;}
+  .dev-sec-title{font-family:'JetBrains Mono',monospace;font-size:10px;
+    letter-spacing:2.5px;color:var(--muted);text-transform:uppercase;
+    font-weight:700;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center;}
+  .dev-row{display:flex;align-items:center;justify-content:space-between;padding:6px 0;gap:10px;}
+  .dev-row label{font-size:12px;color:#c9c2c4;flex:1;}
+  .dev-row input[type="range"]{-webkit-appearance:none;appearance:none;
+    width:140px;height:4px;background:var(--border-2);outline:none;border-radius:2px;}
+  .dev-row input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;
+    width:14px;height:14px;background:linear-gradient(135deg,var(--accent),var(--cyan));
+    border-radius:50%;cursor:pointer;box-shadow:0 0 8px rgba(213,0,255,.5);}
+  .dev-row input[type="range"]::-moz-range-thumb{width:14px;height:14px;
+    background:linear-gradient(135deg,var(--accent),var(--cyan));
+    border-radius:50%;cursor:pointer;border:none;}
+  .dev-row .val{font-family:'JetBrains Mono',monospace;font-size:10px;
+    color:var(--accent);min-width:36px;text-align:right;}
+  .dev-textarea{width:100%;background:#0a0708;border:1px solid var(--border-2);
+    color:#fff;padding:10px;font-family:'JetBrains Mono',monospace;font-size:11px;
+    min-height:120px;resize:vertical;outline:none;transition:.2s;}
+  .dev-textarea:focus{border-color:var(--accent);}
+  .dev-hotkeys{display:grid;grid-template-columns:auto 1fr;gap:8px 14px;
+    font-size:11px;color:#c9c2c4;line-height:1.5;}
+  .dev-hotkeys kbd{font-family:'JetBrains Mono',monospace;background:#1a1218;
+    border:1px solid var(--border-2);padding:2px 6px;font-size:10px;
+    color:var(--accent);border-radius:2px;white-space:nowrap;}
+
+  body.edit-mode [data-edit]{outline:1px dashed rgba(213,0,255,.55);
+    outline-offset:3px;cursor:text;transition:outline-color .15s,background .15s;}
+  body.edit-mode [data-edit]:hover{outline-color:var(--accent);background:rgba(213,0,255,.06);}
+  body.edit-mode [data-edit]:focus{outline:1px solid var(--accent);background:rgba(213,0,255,.09);}
+
+  .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);
+    background:linear-gradient(90deg,var(--accent),var(--cyan));color:#fff;
+    padding:14px 24px;font-family:'JetBrains Mono',monospace;font-size:11px;
+    letter-spacing:1.5px;z-index:2000;opacity:0;transition:.35s;
+    pointer-events:none;font-weight:700;text-align:center;max-width:90vw;}
+  .toast.show{transform:translateX(-50%) translateY(0);opacity:1;}
+  .toast.error{background:linear-gradient(90deg,#ff3b3b,#ff6b6b);}
+
+  .rw-save-btn{position:fixed;bottom:24px;right:24px;z-index:9997;
+    background:var(--grad);color:#fff;border:none;
+    padding:14px 22px;font-family:'JetBrains Mono',monospace;
+    font-size:11px;letter-spacing:2px;font-weight:700;
+    text-transform:uppercase;cursor:pointer;transition:.25s;
+    box-shadow:0 0 30px rgba(213,0,255,.35);
+    display:none;align-items:center;gap:10px;}
+  .rw-save-btn.visible{display:inline-flex;}
+  .rw-save-btn:disabled{background:#2a1f21;color:var(--muted-2);
+    cursor:not-allowed;box-shadow:none;}
+  .rw-save-btn:not(:disabled):hover{filter:brightness(1.15);transform:translateY(-2px);}
+  .rw-save-btn .dot{display:inline-block;width:6px;height:6px;border-radius:50%;
+    background:#fff;vertical-align:middle;box-shadow:0 0 8px #fff;
+    animation:pulse 1.6s infinite;}
+  .rw-save-btn:disabled .dot{background:var(--muted-2);box-shadow:none;animation:none;}
+
+  .rw-preview-exit{position:fixed;top:20px;left:20px;z-index:10000;
+    background:var(--grad);color:#fff;border:none;
+    padding:12px 20px;font-family:'JetBrains Mono',monospace;
+    font-size:11px;letter-spacing:2px;font-weight:700;
+    text-transform:uppercase;cursor:pointer;display:none;
+    box-shadow:0 0 30px rgba(213,0,255,.4);}
+  body.preview-mode .rw-preview-exit{display:block;}
+  body.preview-mode nav,
+  body.preview-mode footer,
+  body.preview-mode .dev-panel,
+  body.preview-mode .dev-backdrop,
+  body.preview-mode .rw-save-btn{display:none!important;}
+
+  .loading-overlay{position:fixed;inset:0;z-index:10001;
+    background:#0a0708;display:flex;align-items:center;justify-content:center;
+    flex-direction:column;gap:24px;transition:opacity .4s;}
+  .loading-overlay.hide{opacity:0;pointer-events:none;}
+  .loading-spinner{width:48px;height:48px;border:3px solid var(--border-2);
+    border-top-color:var(--accent);border-radius:50%;animation:spin 1s linear infinite;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+  .loading-text{font-family:'JetBrains Mono',monospace;font-size:11px;
+    letter-spacing:3px;color:var(--muted);text-transform:uppercase;}
+
+  @media(max-width:960px){
+    nav{padding:16px 20px;}
+    .nav-links{display:none;}
+    .nav-links.open{display:flex;flex-direction:column;position:absolute;
+      top:100%;left:0;right:0;background:#0a0708;
+      border-bottom:1px solid var(--border);padding:24px 20px;
+      gap:22px;align-items:flex-start;}
+    .burger{display:block;}
+    .hero{grid-template-columns:1fr;padding:130px 20px 60px;gap:50px;}
+    .hero-title{letter-spacing:-2px;}
+    .monitor{justify-self:stretch;max-width:100%;}
+    .section{padding:70px 20px;}
+    .sec-head{flex-direction:column;align-items:flex-start;gap:12px;}
+    .status-row,.info-top-row,.socials-grid{grid-template-columns:1fr;}
+    .status-cell{border-right:none;border-bottom:1px solid var(--border);}
+    .status-cell:last-child{border-bottom:none;}
+    .cards{grid-template-columns:1fr;}
+    .pcard{border-right:none;border-bottom:1px solid var(--border);}
+    .pcard:last-child{border-bottom:none;}
+    .hero-status{flex-wrap:wrap;margin-top:50px;}
+    .page-inner{padding:120px 16px 70px;}
+    .tab-bar{margin-bottom:50px;}
+    .page-title{margin-bottom:20px;}
+    .page-sub{margin-bottom:44px;}
+    .group-body{grid-template-columns:1fr;}
+    .group-body > .role{border-right:none;}
+    .group-body > .role:not(:last-child){border-bottom:1px solid var(--border);}
+    .group-body > .role:nth-last-child(-n+2){border-bottom:1px solid var(--border);}
+    .group-body > .role:last-child{border-bottom:none;}
+    .info-head{padding:18px 20px;}
+    .info-head h2{font-size:15px;}
+    .info-head .icon{width:38px;height:38px;font-size:17px;}
+    .info-body{padding:22px 20px;}
+    .quote-block{padding:26px 18px;}
+    .quote-title{font-size:15px;flex-direction:column;gap:8px;}
+    .mini-grid{grid-template-columns:1fr;}
+    .mini .v{font-size:15px;}
+    footer{padding:24px 20px;}
+    .footer-inner{flex-direction:column;align-items:flex-start;gap:10px;}
+    .dev-panel{width:100%;}
+    .ip-bar .ip-value{font-size:16px;}
+    .steps{grid-template-columns:1fr;}
+    .mnt-card{padding:36px 24px;}
+    .rw-save-btn{bottom:14px;right:14px;font-size:10px;padding:12px 16px;}
+    .discord-widget-wrap{padding:12px;}
+    .discord-widget-wrap iframe{height:260px;}
+  }
+  @media(max-width:520px){
+    .discord-widget-wrap iframe{height:220px;}
+  }
+</style>
+</head>
+<body>
+
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="loading-spinner"></div>
+  <div class="loading-text">Загрузка RubixWorld...</div>
+</div>
+
+<div class="wrap">
+
+  <nav>
+    <a href="#home" class="brand" data-page="home">
+      <span class="brand-box" id="logoBadge">RW</span>
+      <span class="brand-name" id="brandName">RUBIXWORLD</span>
+    </a>
+    <button class="burger" id="burger">☰</button>
+    <ul class="nav-links" id="menu">
+      <li><a href="#home" data-page="home">Главная</a></li>
+      <li><a href="#guide" data-page="guide">Руководство</a></li>
+      <li><a href="#info" data-page="info">Информация</a></li>
+      <li><a href="#play" class="nav-btn" data-play>Играть</a></li>
+    </ul>
+  </nav>
+
+  <!-- HOME -->
+  <div class="page active" id="page-home">
+    <header class="hero">
+      <div class="hero-left">
+        <div class="eyebrow">Minecraft Server // RubixWorld</div>
+        <h1 class="hero-title">
+          <span class="white">RUBIX</span>
+          <span class="red">WORLD</span>
+        </h1>
+        <p class="hero-desc">
+          Официальный портал проекта RubixWorld.<br>
+          Информация, руководство и состояние сервера — на главной странице.
+        </p>
+        <a href="#info" class="btn-primary" data-page="info">
+          <span class="ico">▣</span> Информация о сервере
+        </a>
+        <div class="hero-status">
+          <span><span class="dot"></span>Статус сервера</span>
+          <span class="sep">|</span>
+          <span>Java Edition</span>
+        </div>
+      </div>
+
+      <div class="monitor">
+        <div class="monitor-head">
+          <span>RubixWorld // Network</span>
+          <span class="live">Live</span>
+        </div>
+        <div class="monitor-body">
+          <div class="label">RW // System Monitor</div>
+          <div class="radar">
+            <div class="ring r3"></div>
+            <div class="ring r4"></div>
+            <div class="ellipse"></div>
+            <div class="ellipse e2"></div>
+            <div class="ring r2"></div>
+            <div class="ring r1"></div>
+            <div class="radar-center">
+              <div class="zone">ZONE</div>
+              <div class="num">01</div>
+            </div>
+          </div>
+        </div>
+        <div class="monitor-stats">
+          <div class="mstat"><span class="k">Server</span><span class="v">Rubix</span></div>
+          <div class="mstat"><span class="k">Network</span><span class="v">Online</span></div>
+          <div class="mstat"><span class="k">Access</span><span class="v">Public</span></div>
+        </div>
+        <div class="monitor-foot">
+          <span>Secure Connection</span>
+          <span>///</span>
+          <span>Online System</span>
+        </div>
+      </div>
+    </header>
+
+    <section class="section" id="status">
+      <div class="sec-head">
+        <h2 class="sec-title">Статус сервера</h2>
+        <span class="sec-label">Актуальная информация</span>
+      </div>
+      <div class="status-row">
+        <div class="status-cell">
+          <div class="head"><span class="dot" id="homeStatusDot"></span><strong id="homeStatusText">Сервер онлайн</strong></div>
+          <div class="sub" id="homeStatusSub">Актуальный статус проекта</div>
+        </div>
+        <div class="status-cell">
+          <div class="big" id="homeOnline">—</div>
+          <div class="k">Игроков онлайн</div>
+        </div>
+        <div class="status-cell">
+          <div class="big" id="homeProjectStatus">ЗБТ</div>
+          <div class="k">Статус проекта</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <span class="sec-eyebrow">// RubixWorld Portal</span>
+      <div class="sec-head">
+        <h2 class="sec-title">Разделы проекта</h2>
+        <span class="sec-label">Выберите нужный раздел</span>
+      </div>
+      <div class="cards">
+        <a href="#guide" class="pcard" data-page="guide">
+          <div class="icon">⌛</div>
+          <h3>Руководство</h3>
+          <p>Как зайти на сервер и иерархия администрации проекта RubixWorld.</p>
+          <span class="open">Открыть иерархию →</span>
+        </a>
+        <a href="#info" class="pcard" data-page="info">
+          <div class="icon">🗎</div>
+          <h3>Информация</h3>
+          <p>IP-адрес сервера, статус, версия Minecraft, соцсети проекта и подключение.</p>
+          <span class="open">Открыть информацию →</span>
+        </a>
+      </div>
+    </section>
+  </div>
+
+  <!-- GUIDE -->
+  <div class="page" id="page-guide">
+    <main class="page-inner narrow">
+      <div class="tab-bar">
+        <a href="#home" class="tab" data-page="home">← Главная</a>
+        <a href="#guide" class="tab tab-active">Руководство</a>
+      </div>
+      <div class="eyebrow-center">// Staff Hierarchy</div>
+      <h1 class="page-title">Руководство</h1>
+      <p class="page-sub">
+        Как зайти на сервер и иерархия администрации RubixWorld.<br>
+        Здесь отображаются только административные должности проекта.
+      </p>
+
+      <h2 class="sec-title" style="font-size:22px;margin-bottom:22px;">Как зайти на сервер</h2>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">ШАГ 01</div>
+          <h4>Скачай Legacy Launcher</h4>
+          <p>Перейди на официальный сайт лаунчера и скачай последнюю версию.</p>
+        </div>
+        <div class="step">
+          <div class="step-num">ШАГ 02</div>
+          <h4>Войди в аккаунт</h4>
+          <p>Запусти лаунчер и авторизуйся (лицензия или подходящий способ входа).</p>
+        </div>
+        <div class="step">
+          <div class="step-num">ШАГ 03</div>
+          <h4>Добавь сервер</h4>
+          <p>Нажми «Добавить сервер» и вставь IP: <code id="guideIP">rubixworld.mclan.ru</code></p>
+        </div>
+        <div class="step">
+          <div class="step-num">ШАГ 04</div>
+          <h4>Заходи и играй</h4>
+          <p>Подключись к серверу и начинай своё приключение в RubixWorld!</p>
+        </div>
+      </div>
+
+      <h2 class="sec-title" style="font-size:22px;margin:40px 0 22px;">Иерархия проекта</h2>
+
+      <div class="group">
+        <div class="group-head"><span class="group-icon">👑</span><span class="group-title">Высшее руководство</span></div>
+        <div class="group-body">
+          <div class="role">
+            <span class="role-num">01 // Founder</span>
+            <h3 class="role-name">Основатель</h3>
+            <div class="role-players"><span class="role-player-chip">Sayderty</span></div>
+          </div>
+          <div class="role">
+            <span class="role-num">02 // Owner</span>
+            <h3 class="role-name">Владелец</h3>
+            <div class="role-players"><span class="role-player-chip">dark_esz</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="group">
+        <div class="group-head"><span class="group-icon">🏛️</span><span class="group-title">Руководство проекта</span></div>
+        <div class="group-body">
+          <div class="role">
+            <span class="role-num">03 // Dev</span>
+            <h3 class="role-name">Разработчик</h3>
+            <div class="role-players"><span class="role-empty">пусто</span></div>
+          </div>
+          <div class="role">
+            <span class="role-num">04 // Project</span>
+            <h3 class="role-name">Куратор проекта</h3>
+            <div class="role-players"><span class="role-empty">пусто</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="group">
+        <div class="group-head"><span class="group-icon">⚙️</span><span class="group-title">Администрация проекта</span></div>
+        <div class="group-body">
+          <div class="role">
+            <span class="role-num">05 // Admin</span>
+            <h3 class="role-name">Главный Администратор</h3>
+            <div class="role-players"><span class="role-empty">пусто</span></div>
+          </div>
+          <div class="role">
+            <span class="role-num">06 // Admin</span>
+            <h3 class="role-name">Администратор</h3>
+            <div class="role-players"><span class="role-empty">пусто</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="group">
+        <div class="group-head"><span class="group-icon">🛡️</span><span class="group-title">Модерация проекта</span></div>
+        <div class="group-body">
+          <div class="role">
+            <span class="role-num">07 // Mod</span>
+            <h3 class="role-name">Главный Модератор</h3>
+            <div class="role-players"><span class="role-empty">пусто</span></div>
+          </div>
+          <div class="role">
+            <span class="role-num">08 // Mod</span>
+            <h3 class="role-name">Модератор</h3>
+            <div class="role-players"><span class="role-empty">пусто</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="group">
+        <div class="group-head"><span class="group-icon">🤝</span><span class="group-title">Помощники проекта</span></div>
+        <div class="group-body">
+          <div class="role">
+            <span class="role-num">09 // Helper</span>
+            <h3 class="role-name">Главный Хелпер</h3>
+            <div class="role-players"><span class="role-empty">пусто</span></div>
+          </div>
+          <div class="role">
+            <span class="role-num">10 // Helper</span>
+            <h3 class="role-name">Хелпер</h3>
+            <div class="role-players"><span class="role-empty">пусто</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="group">
+        <div class="group-head"><span class="group-icon">📋</span><span class="group-title">Низший персонал</span></div>
+        <div class="group-body">
+          <div class="role">
+            <span class="role-num">11 // Trainee</span>
+            <h3 class="role-name">Стажёр</h3>
+            <div class="role-players"><span class="role-empty">пусто</span></div>
+          </div>
+          <div class="role">
+            <span class="role-num">12 // Media+</span>
+            <h3 class="role-name">Медийка+</h3>
+            <div class="role-players"><span class="role-empty">пусто</span></div>
+          </div>
+          <div class="role">
+            <span class="role-num">13 // Media</span>
+            <h3 class="role-name">Медийка</h3>
+            <div class="role-players"><span class="role-empty">пусто</span></div>
+          </div>
+          <div class="role"></div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- INFO -->
+  <div class="page" id="page-info">
+    <main class="page-inner">
+      <div class="tab-bar">
+        <a href="#home" class="tab" data-page="home">← Главная</a>
+        <a href="#info" class="tab tab-active">Информация</a>
+      </div>
+      <div class="eyebrow-center">// RubixWorld // Project Data</div>
+      <h1 class="page-title">Информация</h1>
+      <p class="page-sub">
+        Официальная информация о проекте RubixWorld и Minecraft-сервере.
+      </p>
+
+      <div class="info-top-row">
+        <div class="ip-bar">
+          <span class="ip-label">IP-адрес сервера</span>
+          <span class="ip-value" id="ipValue">rubixworld.mclan.ru</span>
+          <button class="ip-copy" id="ipCopy">Копировать</button>
+        </div>
+        <div class="status-card">
+          <div class="k">Статус сервера</div>
+          <div class="status-line">
+            <span class="status-dot" id="infoStatusDot"></span>
+            <span class="status-text" id="infoStatusText">Сервер онлайн</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="info-panel">
+        <div class="info-head">
+          <div class="icon">🗎</div>
+          <div>
+            <h2>Информация о проекте RubixWorld</h2>
+            <div class="kicker">Official Project Information</div>
+          </div>
+        </div>
+        <div class="info-body">
+          <p class="welcome" id="welcomeText">
+            Добро пожаловать на официальный портал проекта <b>RubixWorld</b>.
+          </p>
+
+          <div class="quote-block">
+            <div class="quote-title">
+              <span class="ic">🗎</span>
+              <span>Информация о проекте RubixWorld</span>
+            </div>
+            <p class="quote-text">
+              Находясь на сервере, вы автоматически подтверждаете, что ознакомились с настоящими правилами и обязуетесь соблюдать их, а также <b>Правила сообщества</b> (Community Guidelines) и <b>Условия использования</b> (Terms of Service) платформ проекта.
+            </p>
+          </div>
+
+          <div class="mini-grid">
+            <div class="mini">
+              <span class="k">Статус проекта</span>
+              <span class="v" id="miniProjectStatus">ЗБТ</span>
+            </div>
+            <div class="mini">
+              <span class="k">Версия Minecraft сервера</span>
+              <span class="v" id="miniVersion">—</span>
+            </div>
+            <div class="mini">
+              <span class="k">Режим игры</span>
+              <span class="v" id="miniMode">—</span>
+            </div>
+            <div class="mini">
+              <span class="k">Гриф</span>
+              <span class="v" id="miniGrief">—</span>
+            </div>
+          </div>
+
+          <div class="warn-bar">
+            <span class="w-ico">⚠</span>
+            <span>
+              <b>Важно:</b> рекомендованная версия для подключения — <b id="warnVersion">1.20.1</b>. Для актуального состояния сервера следите за новостями в наших соцсетях.
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <h2 class="sec-title" style="font-size:20px;margin:30px 0 18px;">Серверы проекта</h2>
+      <div class="socials-grid">
+        <a class="social-card" data-social="discord" href="#" target="_blank" rel="noopener">
+          <div class="social-icon" style="color:#5865F2;">💬</div>
+          <div>
+            <div class="social-name">Discord</div>
+            <div class="social-sub">Основной чат</div>
+          </div>
+        </a>
+        <a class="social-card" data-social="telegram" href="#" target="_blank" rel="noopener">
+          <div class="social-icon" style="color:#29A9EB;">✈️</div>
+          <div>
+            <div class="social-name">Telegram</div>
+            <div class="social-sub">Канал проекта</div>
+          </div>
+        </a>
+        <a class="social-card" data-social="vk" href="#" target="_blank" rel="noopener">
+          <div class="social-icon" style="color:#0077FF;">🅥</div>
+          <div>
+            <div class="social-name">ВКонтакте</div>
+            <div class="social-sub">Сообщество</div>
+          </div>
+        </a>
+      </div>
+
+      <h2 class="sec-title" style="font-size:20px;margin:40px 0 18px;">Discord сервер</h2>
+      <div class="discord-widget-wrap" id="discordWidgetWrap">
+        <iframe
+          id="discordWidget"
+          src="https://discord.com/widget?id=1542223655680081974&theme=dark"
+          allowtransparency="true"
+          frameborder="0"
+          sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"
+          loading="lazy"
+          title="Discord Widget"></iframe>
+      </div>
+    </main>
+  </div>
+
+  <!-- ADMIN -->
+  <div class="page" id="page-admin">
+    <div class="admin-page">
+      <div class="adm-header">
+        <div class="adm-h1">АДМИН <span class="grad">МЕНЮ</span></div>
+        <p class="adm-sub">Панель управления проектом RubixWorld. Все изменения сохраняются в облако и видны всем посетителям сайта.</p>
+      </div>
+
+      <div id="authBlock">
+        <div class="auth-box" id="authLoginBox">
+          <h3>// Вход администратора</h3>
+          <div class="adm-field">
+            <label class="adm-label">Email</label>
+            <input class="adm-input" id="authEmail" type="email" placeholder="admin@example.com" autocomplete="username">
+          </div>
+          <div class="adm-field">
+            <label class="adm-label">Пароль</label>
+            <input class="adm-input" id="authPass" type="password" placeholder="••••••••" autocomplete="current-password">
+          </div>
+          <button class="adm-btn adm-btn-primary" id="authLoginBtn">Войти</button>
+          <div class="auth-status off" id="authStatus">// Не авторизован</div>
+        </div>
+
+        <div class="auth-box" id="authLoggedBox" style="display:none;">
+          <h3>// Администратор</h3>
+          <div class="auth-user" id="authUser">—</div>
+          <button class="adm-btn adm-btn-danger" id="authLogoutBtn">Выйти</button>
+          <div class="auth-status on">// Авторизован · полный доступ</div>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:26px;">
+        <button class="adm-btn adm-btn-primary" id="admOpenDev" style="width:auto;padding:14px 26px;">🎨 Открыть Dev-Builder</button>
+        <button class="adm-btn" id="admBack" style="width:auto;padding:14px 26px;">← Вернуться на сайт</button>
+        <button class="adm-btn" id="admReload" style="width:auto;padding:14px 26px;">↻ Обновить из облака</button>
+      </div>
+
+      <div class="adm-grid">
+
+        <div class="adm-card">
+          <div class="adm-card-title"><span class="num">!</span> Тех. работы</div>
+          <div class="adm-toggle">
+            <span>Включить тех. работы</span>
+            <div class="adm-switch" id="swMaintenance"></div>
+          </div>
+          <div class="adm-field" style="margin-top:12px;">
+            <label class="adm-label">Текст причины</label>
+            <textarea class="adm-textarea" id="inMaintMsg" placeholder="Сервер на технических работах..."></textarea>
+          </div>
+          <div class="adm-field">
+            <label class="adm-label">Ожидаемое время</label>
+            <input class="adm-input" id="inMaintTime" placeholder="Например: ~30 минут">
+          </div>
+        </div>
+
+        <div class="adm-card">
+          <div class="adm-card-title"><span class="num">◉</span> Статус сервера</div>
+          <div class="adm-field">
+            <label class="adm-label">Индикатор</label>
+            <select class="adm-select" id="inServerStatus">
+              <option value="online">🟢 Онлайн</option>
+              <option value="offline">🔴 Выключен</option>
+              <option value="maintenance">🟡 Тех. работы</option>
+            </select>
+          </div>
+          <div class="adm-field">
+            <label class="adm-label">Онлайн игроков</label>
+            <input class="adm-input" id="inOnlineCount" type="text" placeholder="0">
+          </div>
+        </div>
+
+        <div class="adm-card">
+          <div class="adm-card-title"><span class="num">01</span> Проект</div>
+          <div class="adm-field">
+            <label class="adm-label">Название проекта</label>
+            <input class="adm-input" id="inProjectName">
+          </div>
+          <div class="adm-field">
+            <label class="adm-label">IP-адрес сервера</label>
+            <input class="adm-input" id="inIP">
+          </div>
+          <div class="adm-field">
+            <label class="adm-label">Статус проекта</label>
+            <select class="adm-select" id="inProjectStatus">
+              <option value="ЗБТ">ЗБТ</option>
+              <option value="ОБТ">ОБТ</option>
+              <option value="ОТКРЫТ">ОТКРЫТ</option>
+              <option value="ЗАКРЫТ">ЗАКРЫТ</option>
+              <option value="ТЕХ. РАБОТЫ">ТЕХ. РАБОТЫ</option>
+              <option value="ВАЙП">ВАЙП</option>
+              <option value="custom">— свой текст —</option>
+            </select>
+          </div>
+          <div class="adm-field">
+            <label class="adm-label">Свой статус</label>
+            <input class="adm-input" id="inProjectStatusCustom" placeholder="Например: Сезон 2">
+          </div>
+        </div>
+
+        <div class="adm-card">
+          <div class="adm-card-title"><span class="num">02</span> Версия Minecraft</div>
+          <div class="adm-field">
+            <label class="adm-label">Минимальная</label>
+            <input class="adm-input" id="inVerMin">
+          </div>
+          <div class="adm-field">
+            <label class="adm-label">Максимальная</label>
+            <input class="adm-input" id="inVerMax">
+          </div>
+          <div class="adm-field">
+            <label class="adm-label">Рекомендованная</label>
+            <input class="adm-input" id="inVerRec">
+          </div>
+        </div>
+
+        <div class="adm-card">
+          <div class="adm-card-title"><span class="num">03</span> Режим / Гриф</div>
+          <div class="adm-field">
+            <label class="adm-label">Режим игры</label>
+            <input class="adm-input" id="inMode">
+          </div>
+          <div class="adm-toggle">
+            <span>Гриф включён</span>
+            <div class="adm-switch" id="swGrief"></div>
+          </div>
+        </div>
+
+        <div class="adm-card">
+          <div class="adm-card-title"><span class="num">04</span> Соцсети</div>
+          <div class="adm-field">
+            <label class="adm-label">Discord</label>
+            <input class="adm-input" id="inDiscord">
+          </div>
+          <div class="adm-field">
+            <label class="adm-label">Telegram</label>
+            <input class="adm-input" id="inTelegram">
+          </div>
+          <div class="adm-field">
+            <label class="adm-label">VK</label>
+            <input class="adm-input" id="inVK">
+          </div>
+        </div>
+
+        <div class="adm-card">
+          <div class="adm-card-title"><span class="num">05</span> Discord виджет</div>
+          <div class="adm-toggle">
+            <span>Показывать виджет</span>
+            <div class="adm-switch" id="swDiscordWidget"></div>
+          </div>
+          <div class="adm-field" style="margin-top:12px;">
+            <label class="adm-label">ID сервера</label>
+            <input class="adm-input" id="inDiscordWidgetId">
+          </div>
+        </div>
+
+        <div class="adm-card">
+          <div class="adm-card-title"><span class="num">06</span> Палитра</div>
+          <div class="adm-color-row"><label>Основной</label><input type="color" id="inAccent"></div>
+          <div class="adm-color-row"><label>Второй</label><input type="color" id="inAccent2"></div>
+          <div class="adm-color-row"><label>Градиент 2</label><input type="color" id="inCyan"></div>
+          <div class="adm-color-row"><label>Фон</label><input type="color" id="inBg"></div>
+          <div class="adm-label" style="margin-top:14px;">Пресеты</div>
+          <div class="adm-presets" id="presetColors"></div>
+        </div>
+
+        <div class="adm-card">
+          <div class="adm-card-title"><span class="num">07</span> Эффекты</div>
+          <div class="adm-toggle"><span>Градиентный заголовок</span><div class="adm-switch" id="swGradTitle"></div></div>
+          <div class="adm-toggle"><span>Свечение фона</span><div class="adm-switch" id="swGlow"></div></div>
+          <div class="adm-toggle"><span>Анимация радара</span><div class="adm-switch" id="swRadar"></div></div>
+        </div>
+
+        <div class="adm-card">
+          <div class="adm-card-title"><span class="num">08</span> Логотип</div>
+          <div class="adm-field">
+            <label class="adm-label">Текст в бейдже</label>
+            <input class="adm-input" id="inLogoBadge" maxlength="6">
+          </div>
+          <div class="adm-field">
+            <label class="adm-label">Название рядом</label>
+            <input class="adm-input" id="inBrandName">
+          </div>
+          <div class="adm-field">
+            <label class="adm-label">Favicon</label>
+            <input class="adm-input" id="inFavicon" maxlength="3">
+          </div>
+        </div>
+
+        <div class="adm-card">
+          <div class="adm-card-title"><span class="num">09</span> Приветствие</div>
+          <div class="adm-field">
+            <label class="adm-label">Текст на странице информации</label>
+            <textarea class="adm-textarea" id="inWelcome"></textarea>
+          </div>
+        </div>
+
+        <div class="adm-card">
+          <div class="adm-card-title"><span class="num">10</span> Данные</div>
+          <button class="adm-btn adm-btn-primary" id="btnExportJSON">📦 Экспорт (JSON)</button>
+          <button class="adm-btn" id="btnImportJSON">📥 Импорт (JSON)</button>
+          <input type="file" id="fileImportJSON" accept=".json" style="display:none">
+          <button class="adm-btn adm-btn-danger" id="btnResetAll">⚠ Сброс к дефолту</button>
+        </div>
+
+        <div class="adm-card">
+          <div class="adm-card-title"><span class="num">11</span> Горячие клавиши</div>
+          <div class="dev-hotkeys" style="font-size:12px;line-height:1.9;">
+            <kbd>Ctrl+Shift+клик по лого</kbd><span>Открыть админ-меню</span>
+            <kbd>Ctrl+Shift+D</kbd><span>Dev-Builder</span>
+            <kbd>Ctrl+E</kbd><span>Режим редактирования текстов</span>
+            <kbd>Ctrl+I</kbd><span>Инспектор</span>
+            <kbd>Ctrl+G</kbd><span>Сетка</span>
+            <kbd>Ctrl+B</kbd><span>Границы</span>
+            <kbd>Esc</kbd><span>Закрыть панели</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-inner">
+      <a href="#home" class="brand" data-page="home">
+        <span class="brand-box">RW</span>
+        <span class="brand-name">RUBIXWORLD</span>
+      </a>
+      <span class="copy" id="footerCopy">© 2026 RubixWorld // Minecraft Server</span>
+      <span class="official">Official Project Website</span>
+    </div>
+  </footer>
+</div>
+
+<!-- MAINTENANCE -->
+<div class="maintenance" id="maintenance">
+  <div class="mnt-card">
+    <div class="mnt-tag">System Maintenance</div>
+    <h1 class="mnt-title">Сервер на технических работах</h1>
+    <p class="mnt-sub" id="mntMessage">Сервер на технических работах. Приносим извинения за неудобства.</p>
+    <p class="mnt-sub" id="mntTime" style="margin-top:-14px;color:var(--yellow);font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:2px;text-transform:uppercase;"></p>
+    <div class="mnt-progress"><i></i></div>
+    <div class="mnt-links">
+      <a data-social="discord" href="#" target="_blank" rel="noopener">💬 Discord</a>
+      <a data-social="telegram" href="#" target="_blank" rel="noopener">✈️ Telegram</a>
+      <a data-social="vk" href="#" target="_blank" rel="noopener">🅥 VK</a>
+    </div>
+    <button class="mnt-btn" id="mntReload">⟳ Обновить страницу</button>
+    <div class="mnt-foot">RubixWorld // Попробуйте зайти позже</div>
+  </div>
+</div>
+
+<!-- DEV BUILDER -->
+<div class="dev-backdrop" id="devBackdrop"></div>
+<aside class="dev-panel" id="devPanel" aria-hidden="true">
+  <div class="dev-head">
+    <div>
+      <div class="dev-title"><span class="dev-pulse"></span> DEV-BUILDER</div>
+      <div class="dev-sub">// RubixWorld Cloud v3</div>
+    </div>
+    <button class="dev-close" id="devClose">✕</button>
+  </div>
+  <div class="dev-body">
+    <div class="dev-sec">
+      <div class="dev-sec-title">Режимы</div>
+      <button class="adm-btn adm-btn-primary" id="devEditText">✎ Редактировать тексты (Ctrl+E)</button>
+      <button class="adm-btn" id="devInspect">🔍 Инспектор (Ctrl+I)</button>
+      <button class="adm-btn" id="devPreview">⛶ Полный предпросмотр (F)</button>
+    </div>
+
+    <div class="dev-sec">
+      <div class="dev-sec-title">Геометрия</div>
+      <div class="dev-row"><label>Радиус углов</label><input type="range" id="devRadius" min="0" max="24" value="0"><span class="val" id="devRadiusV">0</span></div>
+      <div class="dev-row"><label>Толщина границ</label><input type="range" id="devBorderW" min="0" max="4" step="0.5" value="1"><span class="val" id="devBorderWV">1</span></div>
+      <div class="dev-row"><label>Прозрачность</label><input type="range" id="devOpacity" min="50" max="100" value="98"><span class="val" id="devOpacityV">98</span></div>
+      <div class="dev-row"><label>Размер шрифта</label><input type="range" id="devFont" min="80" max="130" value="100"><span class="val" id="devFontV">100</span></div>
+      <div class="dev-row"><label>Скорость анимаций</label><input type="range" id="devAnim" min="50" max="200" value="100"><span class="val" id="devAnimV">100</span></div>
+    </div>
+
+    <div class="dev-sec">
+      <div class="dev-sec-title">Кастомный CSS</div>
+      <textarea class="dev-textarea" id="devCSS" placeholder="/* ваш CSS */"></textarea>
+      <button class="adm-btn" id="devApplyCSS" style="margin-top:8px;">Применить</button>
+    </div>
+
+    <div class="dev-sec">
+      <div class="dev-sec-title">Пресеты палитр</div>
+      <div class="adm-presets" id="devPresets"></div>
+    </div>
+
+    <div class="dev-sec">
+      <div class="dev-sec-title">Вид</div>
+      <div class="adm-toggle"><span>Сетка (Ctrl+G)</span><div class="adm-switch" id="swGrid"></div></div>
+      <div class="adm-toggle"><span>Границы (Ctrl+B)</span><div class="adm-switch" id="swBorders"></div></div>
+    </div>
+
+    <div class="dev-sec">
+      <div class="dev-sec-title">Действия</div>
+      <button class="adm-btn adm-btn-primary" id="devSave">💾 Сохранить в облако</button>
+    </div>
+  </div>
+</aside>
+
+<button class="rw-save-btn" id="rwSaveBtn" disabled>
+  <span class="dot"></span>СОХРАНИТЬ
+</button>
+
+<button class="rw-preview-exit" id="rwPreviewExit">✕ Выйти из предпросмотра</button>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+'use strict';
+
+// ================== SUPABASE CONFIG ==================
+const SUPABASE_URL = 'https://ivxbavtknemozxyvtzny.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml2eGJhdnRrbmVtb3p4eXZ0em55Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODkyMTM0MzcsImV4cCI6MjEwNDc4OTQzN30.t9HLZYKiBugXvsSDovZvI3SYrQI8bckZQget87nH-2w';
+const TABLE = 'site_settings';
+
+const supa = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+// ================== DEFAULTS ==================
+const DEFAULTS = {
+  settings:{
+    projectName:'RubixWorld', ip:'rubixworld.mclan.ru',
+    projectStatus:'ЗБТ', projectStatusCustom:'',
+    verMin:'1.20', verMax:'26.2', verRec:'1.20.1',
+    mode:'Гриферский', grief:true,
+    maintenance:false,
+    maintMsg:'Сервер на технических работах. Приносим извинения за неудобства.',
+    maintTime:'~30 минут',
+    serverStatus:'online', onlineCount:'42',
+    discord:'https://disc.gg/rubixworld',
+    telegram:'https://t.me/rubixworld',
+    vk:'https://vk.ru/club241453448',
+    welcome:'Добро пожаловать на официальный портал проекта RubixWorld.',
+    logoBadge:'RW', brandName:'RUBIXWORLD', favicon:'RW',
+    discordWidget:true,
+    discordWidgetId:'1542223655680081974'
+  },
+  effects:{ gradTitle:true, glow:true, radar:true },
+  dev:{ radius:0, borderW:1, opacity:98, font:100, anim:100,
+        customCSS:'', grid:false, borders:false },
+  colors:{ accent:'#D500FF', accent2:'#E93FFF', cyan:'#00E5FF', bg:'#0a0708' }
+};
+
+const DB_MAP = {
+  project_name:'projectName', ip:'ip',
+  project_status:'projectStatus', project_status_custom:'projectStatusCustom',
+  ver_min:'verMin', ver_max:'verMax', ver_rec:'verRec',
+  mode:'mode', grief:'grief',
+  maintenance_mode:'maintenance', maint_msg:'maintMsg', maint_time:'maintTime',
+  server_status:'serverStatus', online_count:'onlineCount',
+  discord:'discord', telegram:'telegram', vk:'vk',
+  welcome:'welcome',
+  logo_badge:'logoBadge', brand_name:'brandName', favicon:'favicon',
+  discord_widget:'discordWidget', discord_widget_id:'discordWidgetId'
+};
+const DB_MAP_REVERSE = {};
+Object.keys(DB_MAP).forEach(k => { DB_MAP_REVERSE[DB_MAP[k]] = k; });
+const BOOL_KEYS = new Set(['grief','maintenance','discordWidget']);
+
+let S = JSON.parse(JSON.stringify(DEFAULTS.settings));
+let E = JSON.parse(JSON.stringify(DEFAULTS.effects));
+let D = JSON.parse(JSON.stringify(DEFAULTS.dev));
+let C = JSON.parse(JSON.stringify(DEFAULTS.colors));
+let CONTENT = {};
+let USER = null;
+
+// ================== TOAST ==================
+const toastEl = document.getElementById('toast');
+let toastT;
+function toast(msg, isError){
+  toastEl.textContent = msg;
+  toastEl.classList.toggle('error', !!isError);
+  toastEl.classList.add('show');
+  clearTimeout(toastT);
+  toastT = setTimeout(() => toastEl.classList.remove('show'), 2200);
+}
+
+// ================== LOAD ==================
+async function loadFromCloud(){
+  try{
+    const { data, error } = await supa.from(TABLE).select('key,value');
+    if(error){ console.error(error); toast('Ошибка загрузки: '+error.message, true); return false; }
+    if(!data) return true;
+    data.forEach(row => {
+      const k = row.key, v = row.value;
+      if(k === 'colors'){ try{ C = Object.assign({}, DEFAULTS.colors, JSON.parse(v)); }catch(e){} return; }
+      if(k === 'effects'){ try{ E = Object.assign({}, DEFAULTS.effects, JSON.parse(v)); }catch(e){} return; }
+      if(k === 'dev'){ try{ D = Object.assign({}, DEFAULTS.dev, JSON.parse(v)); }catch(e){} return; }
+      if(k === 'content'){ try{ CONTENT = JSON.parse(v) || {}; }catch(e){ CONTENT = {}; } return; }
+      const sKey = DB_MAP[k];
+      if(!sKey) return;
+      if(BOOL_KEYS.has(sKey)){ S[sKey] = (v === 'true' || v === true); }
+      else { S[sKey] = v; }
+    });
+    return true;
+  }catch(e){ console.error(e); toast('Ошибка соединения', true); return false; }
+}
+
+// ================== SAVE ==================
+async function saveToCloud(){
+  if(!USER){ toast('Сначала войдите как администратор', true); return false; }
+  const rows = [];
+  Object.keys(DB_MAP_REVERSE).forEach(sKey => {
+    const dbKey = DB_MAP_REVERSE[sKey];
+    const val = S[sKey];
+    rows.push({ key: dbKey, value: typeof val === 'boolean' ? (val ? 'true' : 'false') : String(val == null ? '' : val) });
+  });
+  rows.push({ key:'colors',  value: JSON.stringify(C) });
+  rows.push({ key:'effects', value: JSON.stringify(E) });
+  rows.push({ key:'dev',     value: JSON.stringify(D) });
+  rows.push({ key:'content', value: JSON.stringify(CONTENT) });
+
+  try{
+    const { error } = await supa.from(TABLE).upsert(rows, { onConflict: 'key' });
+    if(error){ console.error(error); toast('Ошибка сохранения: '+error.message, true); return false; }
+    toast('✓ Сохранено в облако · видно всем');
+    return true;
+  }catch(e){ console.error(e); toast('Ошибка сети', true); return false; }
+}
+
+// ================== AUTH ==================
+async function checkSession(){
+  const { data } = await supa.auth.getSession();
+  USER = data && data.session ? data.session.user : null;
+  updateAuthUI();
+}
+function updateAuthUI(){
+  const loginBox = document.getElementById('authLoginBox');
+  const loggedBox = document.getElementById('authLoggedBox');
+  const status = document.getElementById('authStatus');
+  const userEl = document.getElementById('authUser');
+  if(USER){
+    loginBox.style.display = 'none';
+    loggedBox.style.display = 'block';
+    if(userEl) userEl.textContent = USER.email || 'admin';
+  } else {
+    loginBox.style.display = 'block';
+    loggedBox.style.display = 'none';
+    if(status){ status.textContent = '// Не авторизован'; status.classList.remove('on'); status.classList.add('off'); }
+  }
+}
+async function doLogin(){
+  const email = document.getElementById('authEmail').value.trim();
+  const pass = document.getElementById('authPass').value;
+  if(!email || !pass){ toast('Введите email и пароль', true); return; }
+  const { data, error } = await supa.auth.signInWithPassword({ email, password: pass });
+  if(error){ toast('Ошибка входа: '+error.message, true); return; }
+  USER = data.user;
+  updateAuthUI();
+  toast('✓ Вход выполнен');
+}
+async function doLogout(){
+  await supa.auth.signOut();
+  USER = null;
+  updateAuthUI();
+  toast('Вы вышли');
+}
+
+// ================== ROUTING ==================
+const pages = {
+  home: document.getElementById('page-home'),
+  guide: document.getElementById('page-guide'),
+  info: document.getElementById('page-info'),
+  admin: document.getElementById('page-admin')
+};
+const titles = {
+  home:'RubixWorld — Minecraft Server',
+  guide:'Руководство — RubixWorld',
+  info:'Информация — RubixWorld',
+  admin:'Админ-меню — RubixWorld'
+};
+const footerText = {
+  home:'© 2026 RubixWorld // Minecraft Server',
+  guide:'© 2026 RubixWorld // Staff Hierarchy',
+  info:'© 2026 RubixWorld // Project Information',
+  admin:'© 2026 RubixWorld // Admin Panel'
+};
+function setActiveNav(name){
+  document.querySelectorAll('.nav-links a[data-page]').forEach(a => {
+    a.classList.toggle('active', a.dataset.page === name);
+  });
+}
+function updateSaveBtnVisibility(){
+  const btn = document.getElementById('rwSaveBtn');
+  if(!btn) return;
+  const onAdmin = pages.admin.classList.contains('active');
+  btn.classList.toggle('visible', onAdmin);
+  btn.disabled = !USER;
+}
+function goTo(name, push){
+  if(!pages[name]) name = 'home';
+  Object.keys(pages).forEach(k => pages[k].classList.toggle('active', k === name));
+  document.title = titles[name];
+  document.getElementById('footerCopy').textContent = footerText[name];
+  setActiveNav(name);
+  if(push !== false){ window.scrollTo({top:0, behavior:'instant' in window ? 'instant' : 'auto'}); }
+  document.getElementById('menu').classList.remove('open');
+  if(window.location.hash !== '#' + name){
+    try{ history.pushState(null, '', '#' + name); }catch(e){}
+  }
+  checkMaintenance();
+  updateSaveBtnVisibility();
+}
+document.getElementById('burger').addEventListener('click', () => {
+  document.getElementById('menu').classList.toggle('open');
+});
+document.addEventListener('click', (e) => {
+  const el = e.target.closest('[data-page]');
+  if(el){ e.preventDefault(); goTo(el.dataset.page); return; }
+  const play = e.target.closest('[data-play]');
+  if(play){
+    e.preventDefault();
+    goTo('info');
+    setTimeout(() => {
+      const ipBar = document.querySelector('.ip-bar');
+      if(ipBar) ipBar.scrollIntoView({behavior:'smooth', block:'center'});
+    }, 100);
+  }
+});
+function routeFromHash(){
+  const hash = window.location.hash.replace('#','') || 'home';
+  goTo(hash, false);
+}
+window.addEventListener('hashchange', routeFromHash);
+window.addEventListener('popstate', routeFromHash);
+
+// ================== EDITABLES ==================
+const EDITABLE_SELECTOR = [
+  '.hero-title .white', '.hero-title .red', '.hero-desc', '.eyebrow',
+  '.sec-eyebrow', '.sec-title', '.sec-label',
+  '.pcard h3', '.pcard p', '.pcard .open',
+  '.group-title', '.role-name', '.role-player-chip',
+  '.quote-title > span', '.quote-text',
+  '.mini .k', '.info-head h2', '.info-head .kicker',
+  '.step h4', '.step p', '.step-num',
+  '.social-name', '.social-sub'
+].join(',');
+const SETTINGS_MANAGED = new Set([
+  'brandName','logoBadge','ipValue','guideIP','homeStatusText','homeStatusSub',
+  'homeOnline','homeProjectStatus','infoStatusText','miniProjectStatus',
+  'miniVersion','miniMode','miniGrief','warnVersion','welcomeText','footerCopy',
+  'mntMessage','mntTime','homeStatusDot','infoStatusDot'
+]);
+const editables = Array.from(document.querySelectorAll(EDITABLE_SELECTOR)).filter(el => {
+  if(el.id && SETTINGS_MANAGED.has(el.id)) return false;
+  if(el.classList.contains('welcome')) return false;
+  if(el.classList.contains('big') && el.closest('.status-cell')) return false;
+  return true;
+});
+editables.forEach((el, i) => { el.dataset.edit = 'e' + i; });
+
+function saveContentToMemory(){
+  editables.forEach(el => {
+    const v = el.innerHTML.trim();
+    if(v) CONTENT[el.dataset.edit] = v;
+  });
+}
+function restoreContent(){
+  editables.forEach(el => {
+    const v = CONTENT[el.dataset.edit];
+    if(typeof v === 'string') el.innerHTML = v;
+  });
+}
+let saveT;
+document.addEventListener('input', (e) => {
+  if(e.target && e.target.dataset && e.target.dataset.edit && editMode){
+    clearTimeout(saveT);
+    saveT = setTimeout(() => { saveContentToMemory(); }, 400);
+  }
+});
+
+// ================== APPLY ==================
+function applyColors(){
+  document.getElementById('rwLiveVars').textContent =
+    ':root{' +
+      '--accent:'+C.accent+';--accent-2:'+C.accent2+';--cyan:'+C.cyan+';--bg:'+C.bg+';' +
+      '--red:'+C.accent+';--red-2:'+C.accent2+';' +
+      '--grad:linear-gradient(90deg,'+C.accent+','+C.cyan+');' +
+      '--grad-v:linear-gradient(180deg,'+C.accent+','+C.cyan+');' +
+    '}';
+  ['inAccent','inAccent2','inCyan','inBg'].forEach((id,i) => {
+    const el = document.getElementById(id);
+    if(el && document.activeElement !== el) el.value = [C.accent, C.accent2, C.cyan, C.bg][i];
+  });
+}
+function applyEffects(){
+  document.body.classList.toggle('no-gradient-title', !E.gradTitle);
+  document.body.classList.toggle('no-glow', !E.glow);
+  [['swGradTitle',E.gradTitle],['swGlow',E.glow],['swRadar',E.radar]].forEach(pair => {
+    const el = document.getElementById(pair[0]);
+    if(el) el.classList.toggle('on', pair[1]);
+  });
+}
+function applyDev(){
+  document.getElementById('rwCustomCSS').textContent = D.customCSS || '';
+  document.documentElement.style.setProperty('--radius', D.radius + 'px');
+  document.documentElement.style.setProperty('--border-w', D.borderW + 'px');
+  document.documentElement.style.setProperty('--panel-op', (D.opacity/100));
+  document.documentElement.style.fontSize = D.font + '%';
+  document.documentElement.style.setProperty('--anim', D.anim/100);
+  [['devRadius',D.radius],['devBorderW',D.borderW],['devOpacity',D.opacity],
+   ['devFont',D.font],['devAnim',D.anim]].forEach(pair => {
+    const el = document.getElementById(pair[0]);
+    if(el) el.value = pair[1];
+    const l = document.getElementById(pair[0]+'V');
+    if(l) l.textContent = pair[1];
+  });
+  const dc = document.getElementById('devCSS');
+  if(dc && document.activeElement !== dc) dc.value = D.customCSS || '';
+  document.body.classList.toggle('show-grid', !!D.grid);
+  document.body.classList.toggle('show-borders', !!D.borders);
+  document.getElementById('swGrid').classList.toggle('on', !!D.grid);
+  document.getElementById('swBorders').classList.toggle('on', !!D.borders);
+}
+function applySettings(){
+  document.getElementById('brandName').textContent = S.brandName || 'RUBIXWORLD';
+  document.getElementById('logoBadge').textContent = S.logoBadge || 'RW';
+  document.querySelectorAll('footer .brand-name').forEach(el => el.textContent = S.brandName || 'RUBIXWORLD');
+  document.querySelectorAll('footer .brand-box').forEach(el => el.textContent = S.logoBadge || 'RW');
+
+  document.getElementById('ipValue').textContent = S.ip;
+  document.getElementById('guideIP').textContent = S.ip;
+
+  const sm = {
+    online:{text:'Сервер онлайн', color:'var(--green)', sub:'Актуальный статус проекта'},
+    offline:{text:'Сервер выключен', color:'#ff3b3b', sub:'Сервер временно недоступен'},
+    maintenance:{text:'Тех. работы', color:'var(--yellow)', sub:'Проводятся технические работы'}
+  }[S.serverStatus] || {text:'Сервер онлайн', color:'var(--green)', sub:'Актуальный статус проекта'};
+
+  const hDot = document.getElementById('homeStatusDot');
+  if(hDot){ hDot.style.background = sm.color; hDot.style.boxShadow = '0 0 14px ' + sm.color; }
+  document.getElementById('homeStatusText').textContent = sm.text;
+  document.getElementById('homeStatusSub').textContent = sm.sub;
+  const iDot = document.getElementById('infoStatusDot');
+  if(iDot){ iDot.style.background = sm.color; iDot.style.boxShadow = '0 0 16px ' + sm.color; }
+  document.getElementById('infoStatusText').textContent = sm.text;
+
+  const ps = S.projectStatus === 'custom' ? (S.projectStatusCustom || '—') : S.projectStatus;
+  document.getElementById('homeProjectStatus').textContent = ps;
+  document.getElementById('miniProjectStatus').textContent = ps;
+
+  document.getElementById('miniVersion').innerHTML =
+    'С версии ' + S.verMin + ' до ' + S.verMax + '<br>' + S.verRec + ' — рекомендовано';
+  document.getElementById('warnVersion').textContent = S.verRec;
+  document.getElementById('miniMode').textContent = S.mode;
+  document.getElementById('miniGrief').textContent = S.grief ? 'Включён' : 'Выключен';
+  document.getElementById('homeOnline').textContent = S.onlineCount || '—';
+
+  const w = document.getElementById('welcomeText');
+  if(w) w.innerHTML = S.welcome;
+
+  document.querySelectorAll('[data-social]').forEach(el => {
+    const url = S[el.dataset.social];
+    if(url){ el.href = url; el.style.opacity = '1'; el.style.pointerEvents = 'auto'; }
+    else { el.href = '#'; el.style.opacity = '.5'; }
+  });
+
+  const fc = document.getElementById('dynFavicon');
+  if(fc){
+    const text = (S.favicon || 'RW').slice(0,3);
+    fc.href = "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' fill='%230a0708'/><text x='50%25' y='54%25' font-size='"+(text.length>2?24:34)+"' font-family='sans-serif' font-weight='900' fill='%23D500FF' text-anchor='middle' dominant-baseline='middle'>"+text+"</text></svg>";
+  }
+
+  const wid = document.getElementById('discordWidgetWrap');
+  const wif = document.getElementById('discordWidget');
+  if(wid && wif){
+    if(S.discordWidget && S.discordWidgetId){
+      wid.style.display = '';
+      const desired = 'https://discord.com/widget?id=' + encodeURIComponent(S.discordWidgetId) + '&theme=dark';
+      if(wif.src !== desired) wif.src = desired;
+    } else { wid.style.display = 'none'; }
+  }
+  const swDW = document.getElementById('swDiscordWidget');
+  if(swDW) swDW.classList.toggle('on', !!S.discordWidget);
+
+  document.getElementById('mntMessage').textContent = S.maintMsg || DEFAULTS.settings.maintMsg;
+  const mt = document.getElementById('mntTime');
+  if(S.maintTime){ mt.textContent = '⏱ ' + S.maintTime; mt.style.display = 'block'; }
+  else mt.style.display = 'none';
+
+  const inputs = {
+    inProjectName:S.projectName, inIP:S.ip,
+    inProjectStatus:S.projectStatus, inProjectStatusCustom:S.projectStatusCustom,
+    inVerMin:S.verMin, inVerMax:S.verMax, inVerRec:S.verRec,
+    inMode:S.mode, inDiscord:S.discord, inTelegram:S.telegram, inVK:S.vk,
+    inWelcome:S.welcome, inLogoBadge:S.logoBadge, inBrandName:S.brandName,
+    inFavicon:S.favicon, inOnlineCount:S.onlineCount,
+    inServerStatus:S.serverStatus, inMaintMsg:S.maintMsg, inMaintTime:S.maintTime,
+    inDiscordWidgetId:S.discordWidgetId
+  };
+  Object.keys(inputs).forEach(id => {
+    const el = document.getElementById(id);
+    if(el && document.activeElement !== el) el.value = inputs[id];
+  });
+
+  document.getElementById('swGrief').classList.toggle('on', !!S.grief);
+  document.getElementById('swMaintenance').classList.toggle('on', !!S.maintenance);
+
+  updateSaveBtnVisibility();
+  checkMaintenance();
+  restoreContent();
+}
+function applyAll(){ applyColors(); applyEffects(); applyDev(); applySettings(); }
+function checkMaintenance(){
+  const mnt = document.getElementById('maintenance');
+  if(!mnt) return;
+  const onAdmin = pages.admin.classList.contains('active');
+  const bypass = sessionStorage.getItem('rw_mnt_bypass') === '1';
+  const show = S.maintenance && !onAdmin && !bypass;
+  mnt.classList.toggle('show', show);
+  document.body.classList.toggle('panel-open', show);
+}
+
+// ================== SECRET ACCESS ==================
+document.getElementById('logoBadge').addEventListener('click', (e) => {
+  if((e.ctrlKey || e.metaKey) && e.shiftKey){
+    e.preventDefault(); e.stopPropagation();
+    goTo('admin');
+    toast('Админ-меню открыто');
+  }
+}, true);
+
+document.getElementById('admBack').addEventListener('click', (e) => {
+  e.preventDefault(); e.stopPropagation();
+  goTo('home');
+});
+
+document.getElementById('admReload').addEventListener('click', async () => {
+  toast('Загрузка из облака...');
+  await loadFromCloud();
+  applyAll();
+  toast('✓ Данные обновлены из облака');
+});
+
+document.getElementById('authLoginBtn').addEventListener('click', doLogin);
+document.getElementById('authPass').addEventListener('keypress', (e) => {
+  if(e.key === 'Enter') doLogin();
+});
+document.getElementById('authLogoutBtn').addEventListener('click', doLogout);
+
+// ================== MAINTENANCE RELOAD ==================
+document.getElementById('mntReload').addEventListener('click', (e) => {
+  if((e.ctrlKey || e.metaKey) && e.shiftKey){
+    e.preventDefault();
+    sessionStorage.setItem('rw_mnt_bypass', '1');
+    document.getElementById('maintenance').classList.remove('show');
+    document.body.classList.remove('panel-open');
+    toast('Обход тех. работ активирован');
+    return;
+  }
+  location.reload();
+});
+
+// ================== FLOATING SAVE ==================
+document.getElementById('rwSaveBtn').addEventListener('click', async () => {
+  if(!USER){ toast('Войдите как администратор', true); return; }
+  saveContentToMemory();
+  const btn = document.getElementById('rwSaveBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="dot"></span>СОХРАНЯЮ...';
+  const ok = await saveToCloud();
+  btn.innerHTML = '<span class="dot"></span>СОХРАНИТЬ';
+  btn.disabled = !USER;
+  if(ok) applyAll();
+});
+
+// ================== ADMIN INPUTS ==================
+function bindInput(id, key){
+  const el = document.getElementById(id);
+  if(!el) return;
+  el.addEventListener('input', () => {
+    S[key] = el.value;
+    applySettings();
+  });
+}
+['inProjectName:projectName','inIP:ip','inProjectStatus:projectStatus',
+ 'inProjectStatusCustom:projectStatusCustom','inVerMin:verMin','inVerMax:verMax',
+ 'inVerRec:verRec','inMode:mode','inDiscord:discord','inTelegram:telegram',
+ 'inVK:vk','inWelcome:welcome','inLogoBadge:logoBadge','inBrandName:brandName',
+ 'inFavicon:favicon','inOnlineCount:onlineCount','inServerStatus:serverStatus',
+ 'inMaintMsg:maintMsg','inMaintTime:maintTime','inDiscordWidgetId:discordWidgetId'].forEach(pair => {
+  const p = pair.split(':'); bindInput(p[0], p[1]);
+});
+['inAccent:accent','inAccent2:accent2','inCyan:cyan','inBg:bg'].forEach(pair => {
+  const p = pair.split(':');
+  const el = document.getElementById(p[0]);
+  if(!el) return;
+  el.addEventListener('input', () => {
+    C[p[1]] = el.value;
+    applyColors();
+  });
+});
+function bindSwitch(id, key){
+  const el = document.getElementById(id);
+  if(!el) return;
+  el.addEventListener('click', () => {
+    S[key] = !S[key];
+    el.classList.toggle('on', S[key]);
+    applySettings();
+  });
+}
+bindSwitch('swGrief','grief');
+bindSwitch('swMaintenance','maintenance');
+bindSwitch('swDiscordWidget','discordWidget');
+
+function bindEffect(id, key){
+  const el = document.getElementById(id);
+  if(!el) return;
+  el.addEventListener('click', () => {
+    E[key] = !E[key];
+    el.classList.toggle('on', E[key]);
+    applyEffects();
+  });
+}
+bindEffect('swGradTitle','gradTitle');
+bindEffect('swGlow','glow');
+bindEffect('swRadar','radar');
+
+document.getElementById('swGrid').addEventListener('click', () => {
+  D.grid = !D.grid; applyDev();
+});
+document.getElementById('swBorders').addEventListener('click', () => {
+  D.borders = !D.borders; applyDev();
+});
+
+// ================== PRESETS ==================
+const PRESETS = {
+  'SCP':{accent:'#D500FF',accent2:'#E93FFF',cyan:'#00E5FF',bg:'#0a0708'},
+  'Cyberpunk':{accent:'#FF007A',accent2:'#FF3DA6',cyan:'#00F0FF',bg:'#08060a'},
+  'Matrix':{accent:'#00FF41',accent2:'#5CFF7A',cyan:'#00C853',bg:'#050805'},
+  'Minecraft':{accent:'#5FA84A',accent2:'#7DC96A',cyan:'#3D7A2E',bg:'#0a0f08'},
+  'Sunset':{accent:'#FF6B35',accent2:'#FF9F45',cyan:'#FFD23F',bg:'#120a08'},
+  'Ocean':{accent:'#00B4D8',accent2:'#48CAE4',cyan:'#90E0EF',bg:'#050a12'},
+  'Neon':{accent:'#F000FF',accent2:'#FF4DFF',cyan:'#00FFA3',bg:'#0a0010'},
+  'Blood':{accent:'#E11D2E',accent2:'#FF3B4E',cyan:'#8B0F1C',bg:'#0a0608'},
+  'Ice':{accent:'#7FE7FF',accent2:'#B8F0FF',cyan:'#E0F7FF',bg:'#0a0d12'},
+  'Vaporwave':{accent:'#FF71CE',accent2:'#FF9FE0',cyan:'#01CDFE',bg:'#0d0714'}
+};
+function buildPresets(container){
+  if(!container) return;
+  container.innerHTML = '';
+  Object.keys(PRESETS).forEach(name => {
+    const p = PRESETS[name];
+    const d = document.createElement('div');
+    d.className = 'adm-preset';
+    d.title = name;
+    d.style.background = 'linear-gradient(135deg, '+p.accent+' 0%, '+p.accent+' 45%, '+p.cyan+' 55%, '+p.cyan+' 100%)';
+    d.addEventListener('click', () => {
+      C = Object.assign({}, p);
+      applyColors();
+      toast('Палитра: ' + name);
+    });
+    container.appendChild(d);
+  });
+}
+buildPresets(document.getElementById('presetColors'));
+buildPresets(document.getElementById('devPresets'));
+
+// ================== DATA ==================
+document.getElementById('btnExportJSON').addEventListener('click', () => {
+  saveContentToMemory();
+  const data = { settings:S, effects:E, dev:D, colors:C, content:CONTENT };
+  const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'rubixworld-settings.json';
+  document.body.appendChild(a); a.click(); a.remove();
+  URL.revokeObjectURL(url);
+  toast('Настройки экспортированы');
+});
+document.getElementById('btnImportJSON').addEventListener('click', () => {
+  document.getElementById('fileImportJSON').click();
+});
+document.getElementById('fileImportJSON').addEventListener('change', (e) => {
+  const f = e.target.files[0]; if(!f) return;
+  const r = new FileReader();
+  r.onload = () => {
+    try{
+      const d = JSON.parse(r.result);
+      if(d.settings) S = Object.assign({}, DEFAULTS.settings, d.settings);
+      if(d.effects) E = Object.assign({}, DEFAULTS.effects, d.effects);
+      if(d.dev) D = Object.assign({}, DEFAULTS.dev, d.dev);
+      if(d.colors) C = Object.assign({}, DEFAULTS.colors, d.colors);
+      if(d.content) CONTENT = d.content;
+      applyAll();
+      toast('Настройки импортированы');
+    }catch(err){ toast('Ошибка файла', true); }
+  };
+  r.readAsText(f);
+});
+document.getElementById('btnResetAll').addEventListener('click', async () => {
+  if(!confirm('Сбросить все настройки к дефолту?')) return;
+  S = JSON.parse(JSON.stringify(DEFAULTS.settings));
+  E = JSON.parse(JSON.stringify(DEFAULTS.effects));
+  D = JSON.parse(JSON.stringify(DEFAULTS.dev));
+  C = JSON.parse(JSON.stringify(DEFAULTS.colors));
+  CONTENT = {};
+  applyAll();
+  toast('Сброшено к дефолту. Нажмите СОХРАНИТЬ чтобы записать в облако.');
+});
+
+// ================== DEV BUILDER ==================
+const devPanel = document.getElementById('devPanel');
+const devBackdrop = document.getElementById('devBackdrop');
+function openDev(){
+  devPanel.classList.add('open');
+  devBackdrop.classList.add('open');
+  document.body.classList.add('panel-open');
+}
+function closeDev(){
+  devPanel.classList.remove('open');
+  devBackdrop.classList.remove('open');
+  if(!S.maintenance) document.body.classList.remove('panel-open');
+  else checkMaintenance();
+}
+document.getElementById('devClose').addEventListener('click', closeDev);
+devBackdrop.addEventListener('click', closeDev);
+document.getElementById('admOpenDev').addEventListener('click', (e) => {
+  e.preventDefault(); e.stopPropagation();
+  openDev();
+}, true);
+
+[['devRadius','radius'],['devBorderW','borderW'],['devOpacity','opacity'],
+ ['devFont','font'],['devAnim','anim']].forEach(pair => {
+  const el = document.getElementById(pair[0]);
+  const lbl = document.getElementById(pair[0] + 'V');
+  if(!el) return;
+  el.addEventListener('input', () => {
+    D[pair[1]] = +el.value;
+    if(lbl) lbl.textContent = el.value;
+    applyDev();
+  });
+});
+document.getElementById('devApplyCSS').addEventListener('click', () => {
+  D.customCSS = document.getElementById('devCSS').value;
+  applyDev();
+  toast('CSS применён');
+});
+document.getElementById('devCSS').addEventListener('blur', () => {
+  D.customCSS = document.getElementById('devCSS').value;
+  applyDev();
+});
+
+let editMode = false;
+function toggleEdit(){
+  editMode = !editMode;
+  editables.forEach(el => {
+    el.contentEditable = editMode ? 'true' : 'false';
+    el.spellcheck = false;
+  });
+  document.body.classList.toggle('edit-mode', editMode);
+  toast(editMode ? 'Режим редактирования ВКЛ' : 'Тексты обновлены в памяти');
+  if(!editMode) saveContentToMemory();
+}
+document.getElementById('devEditText').addEventListener('click', (e) => {
+  e.preventDefault(); e.stopPropagation();
+  toggleEdit();
+}, true);
+document.getElementById('devPreview').addEventListener('click', (e) => {
+  e.preventDefault(); e.stopPropagation();
+  document.body.classList.add('preview-mode');
+  toast('Предпросмотр · F или Esc для выхода');
+}, true);
+document.getElementById('rwPreviewExit').addEventListener('click', () => {
+  document.body.classList.remove('preview-mode');
+});
+document.addEventListener('keydown', (e) => {
+  if(e.key === 'Escape'){
+    closeDev();
+    document.body.classList.remove('preview-mode');
+  }
+  if((e.key === 'f' || e.key === 'F') && !e.ctrlKey && !e.metaKey && !e.altKey){
+    const tag = (document.activeElement && document.activeElement.tagName) || '';
+    if(tag !== 'INPUT' && tag !== 'TEXTAREA' && !document.activeElement.isContentEditable){
+      if(devPanel.classList.contains('open')){
+        e.preventDefault();
+        document.body.classList.toggle('preview-mode');
+      }
+    }
+  }
+});
+
+let inspectMode = false;
+function toggleInspect(){
+  inspectMode = !inspectMode;
+  document.body.style.cursor = inspectMode ? 'crosshair' : '';
+  toast(inspectMode ? 'Инспектор ВКЛ · клик по блоку' : 'Инспектор ВЫКЛ');
+}
+document.getElementById('devInspect').addEventListener('click', (e) => {
+  e.preventDefault(); e.stopPropagation();
+  toggleInspect();
+}, true);
+document.addEventListener('click', (e) => {
+  if(!inspectMode) return;
+  const t = e.target.closest('section, header, nav, footer, .section, .card, .pcard, .group, .info-panel, .mini, .role, .step, .social-card, .ip-bar, .status-card, .monitor, .hero, .mnt-card, .discord-widget-wrap');
+  if(!t) return;
+  e.preventDefault(); e.stopPropagation();
+  const cls = Array.from(t.classList).join('.');
+  const tag = t.tagName.toLowerCase();
+  const sel = cls ? tag + '.' + cls : tag;
+  const cs = getComputedStyle(t);
+  console.log('[RW Inspector]', sel, t, cs);
+  try{ navigator.clipboard.writeText(sel); }catch(_){}
+  toast('Инспектор: ' + sel);
+}, true);
+
+document.getElementById('devSave').addEventListener('click', async () => {
+  if(!USER){ toast('Войдите как администратор', true); return; }
+  saveContentToMemory();
+  const ok = await saveToCloud();
+  if(ok) applyAll();
+});
+
+// ================== GLOBAL HOTKEYS ==================
+document.addEventListener('keydown', (e) => {
+  if((e.ctrlKey||e.metaKey) && e.shiftKey && e.code === 'KeyD'){
+    e.preventDefault(); openDev();
+  }
+  if((e.ctrlKey||e.metaKey) && !e.shiftKey && e.code === 'KeyE'){
+    e.preventDefault(); toggleEdit();
+  }
+  if((e.ctrlKey||e.metaKey) && !e.shiftKey && e.code === 'KeyG'){
+    e.preventDefault();
+    D.grid = !D.grid; applyDev();
+  }
+  if((e.ctrlKey||e.metaKey) && !e.shiftKey && e.code === 'KeyB'){
+    e.preventDefault();
+    D.borders = !D.borders; applyDev();
+  }
+  if((e.ctrlKey||e.metaKey) && !e.shiftKey && e.code === 'KeyI'){
+    e.preventDefault(); toggleInspect();
+  }
+});
+
+// ================== IP COPY ==================
+document.getElementById('ipCopy').addEventListener('click', () => {
+  const ip = S.ip;
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(ip).then(
+      () => toast('IP скопирован: ' + ip),
+      () => fallbackCopy(ip)
+    );
+  } else fallbackCopy(ip);
+});
+function fallbackCopy(text){
+  const ta = document.createElement('textarea');
+  ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+  document.body.appendChild(ta);
+  ta.select();
+  try{ document.execCommand('copy'); toast('IP скопирован: ' + text); }
+  catch(e){ toast('Не удалось скопировать', true); }
+  ta.remove();
+}
+
+// ================== INIT ==================
+(async function init(){
+  await checkSession();
+  await loadFromCloud();
+  applyAll();
+  routeFromHash();
+  updateSaveBtnVisibility();
+
+  (function(){
+    const r2 = document.querySelector('.ring.r2');
+    const r3 = document.querySelector('.ring.r3');
+    let a2 = 35, a3 = -25;
+    function tick(){
+      if(E.radar){
+        a2 += 0.15; a3 -= 0.10;
+        if(r2) r2.style.transform = 'rotate(' + a2 + 'deg)';
+        if(r3) r3.style.transform = 'rotate(' + a3 + 'deg)';
+      }
+      requestAnimationFrame(tick);
+    }
+    tick();
+  })();
+
+  setTimeout(() => {
+    document.getElementById('loadingOverlay').classList.add('hide');
+  }, 400);
+})();
+
+supa.auth.onAuthStateChange((_event, session) => {
+  USER = session ? session.user : null;
+  updateAuthUI();
+  updateSaveBtnVisibility();
+});
+
+})();
+</script>
+</body>
+</html>
