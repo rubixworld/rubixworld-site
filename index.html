@@ -117,7 +117,6 @@
     font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;
     color:var(--muted-2);text-transform:uppercase;}
 
-  /* HOSTING STATUS */
   .hosting-status{position:absolute;inset:0;display:flex;flex-direction:column;
     align-items:center;justify-content:center;padding:30px;text-align:center;}
   .hosting-dot{width:90px;height:90px;border-radius:50%;
@@ -314,7 +313,6 @@
   .warn-bar .w-ico{color:var(--gold);font-size:15px;flex-shrink:0;line-height:1.4;}
   .warn-bar b{color:#fff;font-weight:700;}
 
-  /* ============ RULES ============ */
   .rules-content{border:1px solid var(--border-2);
     background:linear-gradient(180deg,#0d0a0b,#0a0708);
     padding:36px 34px;position:relative;}
@@ -323,7 +321,6 @@
   .rules-intro{border-left:2px solid rgba(213,0,255,.35);
     padding:6px 0 6px 20px;color:#b6b0b2;font-size:14px;
     line-height:1.8;margin-bottom:36px;font-style:italic;}
-  .rules-intro br{display:block;content:'';margin:4px 0;}
   .rules-section{margin-bottom:36px;}
   .rules-section:last-child{margin-bottom:0;}
   .rules-section-title{font-size:17px;font-weight:900;color:#fff;
@@ -340,12 +337,7 @@
     color:#a8a2a4;letter-spacing:.5px;line-height:1.9;
     padding:10px 14px;background:rgba(255,255,255,.02);
     border-left:2px solid var(--border-2);margin-top:8px;}
-  .rules-list-pills{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;}
-  .rules-list-pills span{display:inline-block;padding:4px 10px;
-    border:1px solid var(--border-2);font-family:'JetBrains Mono',monospace;
-    font-size:11px;color:#c9c2c4;background:rgba(255,255,255,.015);letter-spacing:.4px;}
 
-  /* MINECRAFT RULES — list */
   .mc-list{display:flex;flex-direction:column;gap:8px;}
   .mc-rule{display:grid;grid-template-columns:68px 1fr auto;
     gap:16px;align-items:center;padding:14px 18px;
@@ -366,7 +358,6 @@
     font-size:12px;letter-spacing:2px;color:var(--yellow);
     text-transform:uppercase;font-weight:700;}
 
-  /* ============ NEWS ============ */
   .news-list{display:flex;flex-direction:column;gap:22px;}
   .news-post{border:1px solid var(--border-2);
     background:linear-gradient(180deg,#0d0a0b,#0a0708);
@@ -445,7 +436,6 @@
   .mnt-foot{margin-top:28px;font-family:'JetBrains Mono',monospace;
     font-size:10px;letter-spacing:2px;color:var(--muted-2);text-transform:uppercase;}
 
-  /* ADMIN */
   .admin-page{padding:140px 24px 80px;max-width:1100px;margin:0 auto;}
   .adm-header{margin-bottom:40px;}
   .adm-h1{font-size:clamp(30px,5vw,56px);font-weight:900;letter-spacing:-1.5px;
@@ -530,7 +520,6 @@
     text-transform:uppercase;transition:.2s;}
   .adm-news-item .del:hover{border-color:#ff3b3b;color:#ff3b3b;}
 
-  /* LOGIN OVERLAY */
   .auth-overlay{position:fixed;inset:0;z-index:10002;
     background:rgba(0,0,0,.78);
     backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
@@ -564,7 +553,6 @@
     color:var(--muted-2);text-align:center;letter-spacing:1.5px;
     margin-top:14px;text-transform:uppercase;}
 
-  /* DEV BUILDER */
   .dev-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.5);
     backdrop-filter:blur(3px);opacity:0;pointer-events:none;transition:.3s;z-index:1000;}
   .dev-backdrop.open{opacity:1;pointer-events:auto;}
@@ -759,7 +747,7 @@
     </ul>
   </nav>
 
-  <!-- ===== HOME ===== -->
+  <!-- HOME -->
   <div class="page active" id="page-home">
     <header class="hero">
       <div class="hero-left">
@@ -864,7 +852,7 @@
     </section>
   </div>
 
-  <!-- ===== GUIDE ===== -->
+  <!-- GUIDE -->
   <div class="page" id="page-guide">
     <main class="page-inner narrow">
       <div class="tab-bar">
@@ -893,7 +881,7 @@
         <div class="step">
           <div class="step-num">ШАГ 03</div>
           <h4>Добавь сервер</h4>
-          <p>Нажми «Добавить сервер» и вставь IP: <code id="guideIP">rubixworld.mclan.ru</code></p>
+          <p>Нажми «Добавить сервер» и вставь IP: <code>{{IP}}</code></p>
         </div>
         <div class="step">
           <div class="step-num">ШАГ 04</div>
@@ -1008,7 +996,7 @@
     </main>
   </div>
 
-  <!-- ===== INFO ===== -->
+  <!-- INFO -->
   <div class="page" id="page-info">
     <main class="page-inner">
       <div class="tab-bar">
@@ -1121,7 +1109,7 @@
     </main>
   </div>
 
-  <!-- ===== RULES ===== -->
+  <!-- RULES -->
   <div class="page" id="page-rules">
     <main class="page-inner">
       <div class="tab-bar">
@@ -1132,17 +1120,13 @@
       </div>
       <div class="eyebrow-center">// Server Rules</div>
       <h1 class="page-title">Правила</h1>
-      <p class="page-sub">
-        Ознакомься перед игрой. Незнание правил не освобождает от ответственности.
-      </p>
+      <p class="page-sub">Ознакомься перед игрой. Незнание правил не освобождает от ответственности.</p>
 
-      <!-- RULES: MINECRAFT -->
       <div class="rule-tab-content" id="rule-mc">
         <div class="rules-content">
           <div class="rules-intro">
             Правила сервера — <b style="color:var(--accent)">RubixWorld</b>. Наказание выдаётся соразмерно тяжести нарушения. Администрация оставляет за собой право изменять меру наказания по ситуации.
           </div>
-
           <div class="rules-section">
             <div class="rules-section-title">Список нарушений и наказаний</div>
             <div class="mc-list">
@@ -1176,13 +1160,11 @@
               <div class="mc-rule"><span class="mc-rule-num">6.2</span><span class="mc-rule-text">Неадекватное общение с создателем</span><span class="mc-rule-punish">мут на 3 часа + варн (если персонал)</span></div>
               <div class="mc-rule"><span class="mc-rule-num">6.3</span><span class="mc-rule-text">Размут / разбан</span><span class="mc-rule-punish">+1 варн персоналу / бан игроку 3 дня</span></div>
             </div>
-
             <div class="rules-bottom-warn">« Незнание правил не освобождает от ответственности! »</div>
           </div>
         </div>
       </div>
 
-      <!-- RULES: DISCORD -->
       <div class="rule-tab-content" id="rule-discord" style="display:none;">
         <div class="rules-content">
           <div class="rules-intro">
@@ -1346,7 +1328,6 @@
         </div>
       </div>
 
-      <!-- RULES: STAFF (заглушка) -->
       <div class="rule-tab-content" id="rule-staff" style="display:none;">
         <div class="rules-content">
           <div class="rules-intro">
@@ -1365,7 +1346,7 @@
     </main>
   </div>
 
-  <!-- ===== NEWS ===== -->
+  <!-- NEWS -->
   <div class="page" id="page-news">
     <main class="page-inner">
       <div class="tab-bar">
@@ -1383,7 +1364,7 @@
     </main>
   </div>
 
-  <!-- ===== ADMIN ===== -->
+  <!-- ADMIN -->
   <div class="page" id="page-admin">
     <div class="admin-page">
       <div class="adm-header">
@@ -1569,6 +1550,7 @@
           <button class="adm-btn adm-btn-primary" id="btnExportJSON">📦 Экспорт (JSON)</button>
           <button class="adm-btn" id="btnImportJSON">📥 Импорт (JSON)</button>
           <input type="file" id="fileImportJSON" accept=".json" style="display:none">
+          <button class="adm-btn" id="btnClearContent" style="border-color:rgba(232,178,58,.5);color:var(--yellow);">🧹 Очистить тексты</button>
           <button class="adm-btn adm-btn-danger" id="btnResetAll">⚠ Сброс к дефолту</button>
         </div>
 
@@ -1601,7 +1583,6 @@
   </footer>
 </div>
 
-<!-- MAINTENANCE -->
 <div class="maintenance" id="maintenance">
   <div class="mnt-card">
     <div class="mnt-tag">System Maintenance</div>
@@ -1619,7 +1600,6 @@
   </div>
 </div>
 
-<!-- LOGIN OVERLAY -->
 <div class="auth-overlay" id="authOverlay">
   <div class="auth-modal">
     <button class="auth-modal-close" id="authClose">✕</button>
@@ -1638,7 +1618,6 @@
   </div>
 </div>
 
-<!-- DEV BUILDER -->
 <div class="dev-backdrop" id="devBackdrop"></div>
 <aside class="dev-panel" id="devPanel" aria-hidden="true">
   <div class="dev-head">
@@ -1655,7 +1634,6 @@
       <button class="adm-btn" id="devInspect">🔍 Инспектор (Ctrl+I)</button>
       <button class="adm-btn" id="devPreview">⛶ Полный предпросмотр (F)</button>
     </div>
-
     <div class="dev-sec">
       <div class="dev-sec-title">Геометрия</div>
       <div class="dev-row"><label>Радиус углов</label><input type="range" id="devRadius" min="0" max="24" value="0"><span class="val" id="devRadiusV">0</span></div>
@@ -1664,24 +1642,20 @@
       <div class="dev-row"><label>Размер шрифта</label><input type="range" id="devFont" min="80" max="130" value="100"><span class="val" id="devFontV">100</span></div>
       <div class="dev-row"><label>Скорость анимаций</label><input type="range" id="devAnim" min="50" max="200" value="100"><span class="val" id="devAnimV">100</span></div>
     </div>
-
     <div class="dev-sec">
       <div class="dev-sec-title">Кастомный CSS</div>
       <textarea class="dev-textarea" id="devCSS" placeholder="/* ваш CSS */"></textarea>
       <button class="adm-btn" id="devApplyCSS" style="margin-top:8px;">Применить</button>
     </div>
-
     <div class="dev-sec">
       <div class="dev-sec-title">Пресеты палитр</div>
       <div class="adm-presets" id="devPresets"></div>
     </div>
-
     <div class="dev-sec">
       <div class="dev-sec-title">Вид</div>
       <div class="adm-toggle"><span>Сетка (Ctrl+G)</span><div class="adm-switch" id="swGrid"></div></div>
       <div class="adm-toggle"><span>Границы (Ctrl+B)</span><div class="adm-switch" id="swBorders"></div></div>
     </div>
-
     <div class="dev-sec">
       <div class="dev-sec-title">Действия</div>
       <button class="adm-btn adm-btn-primary" id="devSave">💾 Сохранить в облако</button>
@@ -1705,7 +1679,6 @@ const TABLE = 'site_settings';
 const NEWS_TABLE = 'news';
 const STORAGE_BUCKET = 'news-images';
 
-// Логин → email маппинг
 const LOGIN_MAP = {
   'sayderty': 'Sayderty@rubixworld.local',
   'dark_esz': 'dark_esz@rubixworld.local'
@@ -1809,7 +1782,14 @@ async function loadFromCloud(){
       if(k === 'colors'){ try{ C = Object.assign({}, DEFAULTS.colors, JSON.parse(v)); }catch(e){} return; }
       if(k === 'effects'){ try{ E = Object.assign({}, DEFAULTS.effects, JSON.parse(v)); }catch(e){} return; }
       if(k === 'dev'){ try{ D = Object.assign({}, DEFAULTS.dev, JSON.parse(v)); }catch(e){} return; }
-      if(k === 'content'){ try{ CONTENT = JSON.parse(v) || {}; }catch(e){ CONTENT = {}; } return; }
+      if(k === 'content'){
+        try{
+          const parsed = JSON.parse(v) || {};
+          if(parsed.__v === CONTENT_VERSION){ CONTENT = parsed; }
+          else { CONTENT = { __v: CONTENT_VERSION }; }
+        }catch(e){ CONTENT = { __v: CONTENT_VERSION }; }
+        return;
+      }
       const sKey = DB_MAP[k];
       if(!sKey) return;
       if(BOOL_KEYS.has(sKey)){ S[sKey] = (v === 'true' || v === true); }
@@ -1829,6 +1809,7 @@ async function saveToCloud(){
   rows.push({ key:'colors',  value: JSON.stringify(C) });
   rows.push({ key:'effects', value: JSON.stringify(E) });
   rows.push({ key:'dev',     value: JSON.stringify(D) });
+  CONTENT.__v = CONTENT_VERSION;
   rows.push({ key:'content', value: JSON.stringify(CONTENT) });
   try{
     const { error } = await supa.from(TABLE).upsert(rows, { onConflict: 'key' });
@@ -2063,7 +2044,6 @@ document.getElementById('burger').addEventListener('click', () => {
   document.getElementById('menu').classList.toggle('open');
 });
 document.addEventListener('click', (e) => {
-  // Rules tabs
   const ruleTab = e.target.closest('[data-rule-tab]');
   if(ruleTab){
     e.preventDefault();
@@ -2074,7 +2054,6 @@ document.addEventListener('click', (e) => {
     if(target) target.style.display = 'block';
     return;
   }
-  // Delete news
   const del = e.target.closest('[data-del]');
   if(del){ e.preventDefault(); deleteNews(del.dataset.del); return; }
 
@@ -2098,6 +2077,47 @@ window.addEventListener('hashchange', routeFromHash);
 window.addEventListener('popstate', routeFromHash);
 
 // ================== EDITABLES ==================
+const CONTENT_VERSION = 3;
+const PLACEHOLDERS = [
+  { key:'{{IP}}',       get:() => S.ip || '' },
+  { key:'{{PROJECT}}',  get:() => S.projectName || '' },
+  { key:'{{BRAND}}',    get:() => S.brandName || '' },
+  { key:'{{DISCORD}}',  get:() => S.discord || '' },
+  { key:'{{TELEGRAM}}', get:() => S.telegram || '' },
+  { key:'{{VK}}',       get:() => S.vk || '' }
+];
+function applyPlaceholders(html){
+  if(typeof html !== 'string') return html;
+  let out = html;
+  PLACEHOLDERS.forEach(p => { out = out.split(p.key).join(p.get()); });
+  return out;
+}
+function packPlaceholders(html){
+  if(typeof html !== 'string') return html;
+  let out = html;
+  if(S.ip && S.ip.length > 3) out = out.split(S.ip).join('{{IP}}');
+  [['{{PROJECT}}', S.projectName], ['{{DISCORD}}', S.discord],
+   ['{{TELEGRAM}}', S.telegram], ['{{VK}}', S.vk]].forEach(pair => {
+    const ph = pair[0], val = pair[1];
+    if(val && val.length > 3) out = out.split(val).join(ph);
+  });
+  return out;
+}
+function stableKey(el){
+  const path = [];
+  let n = el;
+  while(n && n !== document.body && n.nodeType === 1){
+    if(n.id){ path.unshift('#' + n.id); break; }
+    const parent = n.parentNode;
+    if(!parent) break;
+    const siblings = Array.from(parent.children).filter(c => c.tagName === n.tagName);
+    const idx = siblings.indexOf(n);
+    path.unshift(n.tagName.toLowerCase() + ':' + idx);
+    n = parent;
+  }
+  return path.join('>') || 'root';
+}
+
 const EDITABLE_SELECTOR = [
   '.hero-title .white', '.hero-title .red', '.hero-desc', '.eyebrow',
   '.sec-eyebrow', '.sec-title', '.sec-label',
@@ -2118,20 +2138,24 @@ const editables = Array.from(document.querySelectorAll(EDITABLE_SELECTOR)).filte
   if(el.id && SETTINGS_MANAGED.has(el.id)) return false;
   if(el.classList.contains('welcome')) return false;
   if(el.classList.contains('big') && el.closest('.status-cell')) return false;
+  if(el.closest('.rules-content')) return false;
+  if(el.closest('.news-post')) return false;
+  if(el.closest('#page-admin')) return false;
   return true;
 });
-editables.forEach((el, i) => { el.dataset.edit = 'e' + i; });
+editables.forEach(el => { el.dataset.edit = stableKey(el); });
 
 function saveContentToMemory(){
   editables.forEach(el => {
     const v = el.innerHTML.trim();
-    if(v) CONTENT[el.dataset.edit] = v;
+    if(v) CONTENT[el.dataset.edit] = packPlaceholders(v);
   });
 }
 function restoreContent(){
+  if(CONTENT.__v !== CONTENT_VERSION){ CONTENT = { __v: CONTENT_VERSION }; return; }
   editables.forEach(el => {
     const v = CONTENT[el.dataset.edit];
-    if(typeof v === 'string') el.innerHTML = v;
+    if(typeof v === 'string') el.innerHTML = applyPlaceholders(v);
   });
 }
 let saveT;
@@ -2199,7 +2223,6 @@ function applySettings(){
   document.querySelectorAll('footer .brand-box').forEach(el => el.textContent = S.logoBadge || 'RW');
 
   document.getElementById('ipValue').textContent = S.ip;
-  document.getElementById('guideIP').textContent = S.ip;
 
   const sm = {
     online:{text:'Сервер онлайн', color:'var(--green)', sub:'Актуальный статус проекта'},
@@ -2277,9 +2300,18 @@ function applySettings(){
   document.getElementById('swMaintenance').classList.toggle('on', !!S.maintenance);
 
   applyHostingStatus();
+
+  // Восстанавливаем тексты и обновляем плейсхолдеры {{IP}} и т.д.
+  if(CONTENT.__v === CONTENT_VERSION){
+    editables.forEach(el => {
+      if(el.dataset.edit && CONTENT[el.dataset.edit]){
+        el.innerHTML = applyPlaceholders(CONTENT[el.dataset.edit]);
+      }
+    });
+  }
+
   updateSaveBtnVisibility();
   checkMaintenance();
-  restoreContent();
 }
 function applyAll(){ applyColors(); applyEffects(); applyDev(); applySettings(); }
 function checkMaintenance(){
@@ -2315,8 +2347,7 @@ document.getElementById('loginInput').addEventListener('keypress', (e) => {
 document.getElementById('authLogoutBtn').addEventListener('click', doLogout);
 
 document.getElementById('admBack').addEventListener('click', (e) => {
-  e.preventDefault(); e.stopPropagation();
-  goTo('home');
+  e.preventDefault(); e.stopPropagation(); goTo('home');
 });
 document.getElementById('admReload').addEventListener('click', async () => {
   toast('Загрузка из облака...');
@@ -2377,10 +2408,7 @@ function bindInput(id, key){
   const p = pair.split(':');
   const el = document.getElementById(p[0]);
   if(!el) return;
-  el.addEventListener('input', () => {
-    C[p[1]] = el.value;
-    applyColors();
-  });
+  el.addEventListener('input', () => { C[p[1]] = el.value; applyColors(); });
 });
 function bindSwitch(id, key){
   const el = document.getElementById(id);
@@ -2394,7 +2422,6 @@ function bindSwitch(id, key){
 bindSwitch('swGrief','grief');
 bindSwitch('swMaintenance','maintenance');
 bindSwitch('swDiscordWidget','discordWidget');
-
 function bindEffect(id, key){
   const el = document.getElementById(id);
   if(!el) return;
@@ -2407,7 +2434,6 @@ function bindEffect(id, key){
 bindEffect('swGradTitle','gradTitle');
 bindEffect('swGlow','glow');
 bindEffect('swRadar','radar');
-
 document.getElementById('swGrid').addEventListener('click', () => { D.grid = !D.grid; applyDev(); });
 document.getElementById('swBorders').addEventListener('click', () => { D.borders = !D.borders; applyDev(); });
 
@@ -2432,9 +2458,7 @@ function buildPresets(container){
     const d = document.createElement('div');
     d.className = 'adm-preset'; d.title = name;
     d.style.background = 'linear-gradient(135deg, '+p.accent+' 0%, '+p.accent+' 45%, '+p.cyan+' 55%, '+p.cyan+' 100%)';
-    d.addEventListener('click', () => {
-      C = Object.assign({}, p); applyColors(); toast('Палитра: ' + name);
-    });
+    d.addEventListener('click', () => { C = Object.assign({}, p); applyColors(); toast('Палитра: ' + name); });
     container.appendChild(d);
   });
 }
@@ -2473,13 +2497,19 @@ document.getElementById('fileImportJSON').addEventListener('change', (e) => {
   };
   r.readAsText(f);
 });
+document.getElementById('btnClearContent').addEventListener('click', async () => {
+  if(!confirm('Очистить все сохранённые тексты? Откатятся к стандартным. После этого нажми СОХРАНИТЬ.')) return;
+  CONTENT = { __v: CONTENT_VERSION };
+  // Сразу применяем — сбрасываем тексты к дефолту из HTML
+  location.reload();
+});
 document.getElementById('btnResetAll').addEventListener('click', () => {
   if(!confirm('Сбросить все настройки к дефолту?')) return;
   S = JSON.parse(JSON.stringify(DEFAULTS.settings));
   E = JSON.parse(JSON.stringify(DEFAULTS.effects));
   D = JSON.parse(JSON.stringify(DEFAULTS.dev));
   C = JSON.parse(JSON.stringify(DEFAULTS.colors));
-  CONTENT = {};
+  CONTENT = { __v: CONTENT_VERSION };
   applyAll();
   toast('Сброшено к дефолту. Нажмите СОХРАНИТЬ.');
 });
@@ -2520,8 +2550,7 @@ document.getElementById('devApplyCSS').addEventListener('click', () => {
   applyDev(); toast('CSS применён');
 });
 document.getElementById('devCSS').addEventListener('blur', () => {
-  D.customCSS = document.getElementById('devCSS').value;
-  applyDev();
+  D.customCSS = document.getElementById('devCSS').value; applyDev();
 });
 
 let editMode = false;
@@ -2597,8 +2626,7 @@ document.getElementById('devSave').addEventListener('click', async () => {
 document.addEventListener('keydown', (e) => {
   if((e.ctrlKey||e.metaKey) && e.shiftKey && e.code === 'KeyD'){
     e.preventDefault();
-    if(USER) openDev();
-    else openAuthOverlay();
+    if(USER) openDev(); else openAuthOverlay();
   }
   if((e.ctrlKey||e.metaKey) && !e.shiftKey && e.code === 'KeyE'){
     e.preventDefault(); toggleEdit();
