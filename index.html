@@ -116,6 +116,7 @@
     padding:12px 20px;border-top:1px solid var(--border);
     font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;
     color:var(--muted-2);text-transform:uppercase;}
+
   .monitor .frame-corner{position:absolute;width:22px;height:22px;z-index:3;
     pointer-events:none;transition:.3s;}
   .monitor .fc-tl{top:-1px;left:-1px;border-top:2px solid var(--accent);border-left:2px solid var(--accent);}
@@ -452,7 +453,8 @@
   .mnt-btn:hover{filter:brightness(1.15);box-shadow:0 0 25px rgba(213,0,255,.4);}
   .mnt-foot{margin-top:28px;font-family:'JetBrains Mono',monospace;
     font-size:10px;letter-spacing:2px;color:var(--muted-2);text-transform:uppercase;}
-
+	
+  /* ================= ADMIN ================= */
   .admin-page{padding:140px 24px 80px;max-width:1100px;margin:0 auto;}
   .adm-header{margin-bottom:40px;}
   .adm-h1{font-size:clamp(30px,5vw,56px);font-weight:900;letter-spacing:-1.5px;
@@ -570,6 +572,7 @@
     color:var(--muted-2);text-align:center;letter-spacing:1.5px;
     margin-top:14px;text-transform:uppercase;}
 
+  /* ================= DEV BUILDER ================= */
   .dev-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.5);
     backdrop-filter:blur(3px);opacity:0;pointer-events:none;transition:.3s;z-index:1000;}
   .dev-backdrop.open{opacity:1;pointer-events:auto;}
@@ -677,6 +680,463 @@
   .loading-text{font-family:'JetBrains Mono',monospace;font-size:11px;
     letter-spacing:3px;color:var(--muted);text-transform:uppercase;}
 
+  /* =================================================== */
+  /* ================ DONATE PAGE ====================== */
+  /* =================================================== */
+  body.donate-active nav{display:none !important;}
+  body.donate-active{padding-top:0 !important;}
+
+  .donate-topbar{
+    position:sticky;top:0;z-index:50;
+    background:rgba(10,7,8,.92);
+    backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+    border-bottom:1px solid var(--border);
+    padding:14px 48px;
+    display:flex;justify-content:space-between;align-items:center;
+  }
+  .donate-logo{
+    display:flex;align-items:center;gap:12px;
+    cursor:pointer;user-select:none;
+    text-decoration:none;color:#fff;
+    background:none;border:none;font-family:inherit;
+  }
+  .donate-logo .badge{
+    border:2px solid var(--accent);color:var(--accent);
+    font-weight:900;font-size:13px;letter-spacing:1px;
+    padding:4px 8px;line-height:1;transition:.2s;
+  }
+  .donate-logo:hover .badge{box-shadow:0 0 14px rgba(213,0,255,.5);}
+  .donate-logo .name{
+    font-family:'Inter',sans-serif;font-weight:900;
+    font-size:14px;letter-spacing:3px;
+  }
+  .donate-nav{display:flex;align-items:center;gap:12px;}
+  .donate-nav-btn{
+    display:inline-flex;align-items:center;gap:8px;
+    padding:9px 16px;border:1px solid var(--border-2);
+    background:transparent;color:#c9c2c4;cursor:pointer;
+    font-family:'JetBrains Mono',monospace;font-size:11px;
+    letter-spacing:2px;text-transform:uppercase;font-weight:600;
+    transition:.2s;text-decoration:none;
+  }
+  .donate-nav-btn:hover{border-color:var(--accent);color:#fff;}
+  .donate-cart-btn{
+    display:inline-flex;align-items:center;gap:10px;
+    padding:10px 20px;
+    background:linear-gradient(90deg,var(--accent),var(--cyan));
+    border:none;color:#fff;cursor:pointer;
+    font-family:'JetBrains Mono',monospace;font-size:12px;
+    letter-spacing:1.5px;text-transform:uppercase;font-weight:700;
+    transition:.2s;
+  }
+  .donate-cart-btn:hover{filter:brightness(1.15);box-shadow:0 0 20px rgba(213,0,255,.4);}
+
+  .donate-hero{
+    padding:80px 48px 60px;max-width:1200px;margin:0 auto;
+    display:grid;grid-template-columns:1fr 1fr;gap:50px;align-items:center;
+  }
+  .donate-hero-left h1{
+    font-size:clamp(38px,5.5vw,68px);font-weight:900;
+    letter-spacing:-1.5px;line-height:1;margin-bottom:14px;color:#fff;
+    text-transform:uppercase;
+  }
+  .donate-hero-left h1 .accent{
+    background:var(--grad);
+    -webkit-background-clip:text;background-clip:text;
+    -webkit-text-fill-color:transparent;
+  }
+  .donate-hero-left h2{
+    font-size:clamp(18px,2.2vw,28px);font-weight:900;
+    color:#fff;margin-bottom:22px;
+    text-transform:uppercase;letter-spacing:-.2px;
+    line-height:1.2;
+  }
+  .donate-hero-left p{
+    color:#b6b0b2;font-size:15px;line-height:1.75;
+    max-width:480px;margin-bottom:32px;
+  }
+  .donate-hero-btn{
+    display:inline-flex;align-items:center;gap:10px;
+    padding:16px 26px;
+    background:var(--grad);color:#fff;
+    border:none;cursor:pointer;
+    font-family:inherit;font-weight:800;font-size:13px;
+    letter-spacing:2px;text-transform:uppercase;
+    transition:.2s;
+  }
+  .donate-hero-btn:hover{filter:brightness(1.15);box-shadow:0 0 25px rgba(213,0,255,.4);}
+
+  .donate-hero-visual{
+    aspect-ratio:1/1;max-width:480px;justify-self:end;width:100%;
+    border:1px solid var(--border-2);
+    background:
+      radial-gradient(circle at 40% 40%, rgba(213,0,255,.20), transparent 60%),
+      radial-gradient(circle at 60% 60%, rgba(0,229,255,.14), transparent 60%),
+      linear-gradient(180deg,#0d0a0b,#0a0708);
+    position:relative;overflow:hidden;
+  }
+  .donate-hero-visual::before{
+    content:'';position:absolute;inset:18%;
+    border:1px dashed rgba(213,0,255,.35);border-radius:50%;
+    animation:hostingSpin 40s linear infinite;
+  }
+  .donate-hero-visual::after{
+    content:'RUBIXWORLD';
+    position:absolute;inset:0;display:flex;
+    align-items:center;justify-content:center;
+    font-family:'JetBrains Mono',monospace;
+    font-size:14px;letter-spacing:6px;
+    color:rgba(255,255,255,.15);font-weight:700;
+  }
+
+  .donate-section{max-width:1200px;margin:0 auto;padding:60px 48px;}
+  .donate-section-title{
+    font-size:clamp(22px,3vw,34px);font-weight:900;
+    color:#fff;letter-spacing:-.5px;margin-bottom:22px;
+    text-transform:uppercase;
+    position:relative;display:inline-block;
+  }
+  .donate-section-title::after{
+    content:'';position:absolute;left:0;bottom:-8px;
+    width:60px;height:3px;background:var(--grad);
+  }
+
+  .donate-products-header{
+    display:grid;grid-template-columns:1fr auto auto;gap:20px;
+    align-items:center;margin-bottom:24px;flex-wrap:wrap;
+  }
+  .donate-products-header h2{margin:0;}
+  .donate-filter-select,.donate-search-input{
+    background:#0a0708;border:1px solid var(--border-2);
+    color:#fff;padding:11px 14px;font-family:'JetBrains Mono',monospace;
+    font-size:12px;outline:none;transition:.2s;
+    min-width:200px;
+  }
+  .donate-filter-select:focus,.donate-search-input:focus{border-color:var(--accent);}
+
+  .donate-categories{
+    display:flex;gap:10px;flex-wrap:wrap;margin-bottom:30px;
+  }
+  .donate-cat-btn{
+    display:inline-flex;align-items:center;gap:8px;
+    padding:10px 18px;border:1px solid var(--border-2);
+    background:transparent;color:#c9c2c4;cursor:pointer;
+    font-family:'JetBrains Mono',monospace;font-size:11px;
+    letter-spacing:1.5px;text-transform:uppercase;font-weight:600;
+    transition:.2s;
+  }
+  .donate-cat-btn:hover{border-color:var(--accent);color:#fff;}
+  .donate-cat-btn.active{
+    background:var(--grad);color:#fff;border-color:transparent;
+    box-shadow:0 0 20px rgba(213,0,255,.3);
+  }
+
+  .donate-grid{
+    display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
+    gap:16px;
+  }
+  .donate-empty{
+    grid-column:1/-1;text-align:center;padding:60px 20px;
+    color:var(--muted);font-family:'JetBrains Mono',monospace;
+    font-size:12px;letter-spacing:2px;text-transform:uppercase;
+    border:1px dashed var(--border-2);
+  }
+  .donate-item{
+    border:1px solid var(--border-2);
+    background:linear-gradient(180deg,#0d0a0b,#0a0708);
+    padding:20px;display:flex;flex-direction:column;
+    transition:.25s;position:relative;overflow:hidden;
+  }
+  .donate-item::before{
+    content:'';position:absolute;inset:0;
+    background:linear-gradient(135deg, var(--from), var(--to));
+    opacity:0;transition:.3s;pointer-events:none;
+  }
+  .donate-item:hover{
+    border-color:var(--from);
+    box-shadow:0 0 30px rgba(213,0,255,.15);
+    transform:translateY(-4px);
+  }
+  .donate-item:hover::before{opacity:.05;}
+  .donate-item-name{
+    font-size:15px;font-weight:900;color:#fff;
+    text-transform:uppercase;letter-spacing:.5px;
+    margin-bottom:14px;text-align:center;
+    position:relative;z-index:1;
+  }
+  .donate-item-img{
+    aspect-ratio:1/1;max-height:130px;border-radius:4px;
+    display:flex;align-items:center;justify-content:center;
+    margin-bottom:16px;overflow:hidden;position:relative;z-index:1;
+    box-shadow:inset 0 0 40px rgba(0,0,0,.5);
+  }
+  .donate-item-img img{width:100%;height:100%;object-fit:cover;}
+  .donate-item-placeholder{
+    width:60%;height:60%;
+    background:linear-gradient(135deg,rgba(255,255,255,.15),rgba(255,255,255,.05));
+    border-radius:50%;
+    box-shadow:0 0 30px rgba(255,255,255,.2);
+  }
+  .donate-item-bottom{
+    display:flex;align-items:center;justify-content:space-between;
+    gap:10px;margin-top:auto;position:relative;z-index:1;
+  }
+  .donate-item-price{
+    font-family:'JetBrains Mono',monospace;
+    font-size:15px;font-weight:900;color:#fff;letter-spacing:.5px;
+  }
+  .donate-item-buy{
+    display:inline-flex;align-items:center;gap:6px;
+    padding:9px 14px;border:1px solid var(--border-2);
+    background:rgba(10,7,8,.6);color:#fff;cursor:pointer;
+    font-family:'JetBrains Mono',monospace;font-size:10px;
+    letter-spacing:1px;text-transform:uppercase;font-weight:700;
+    transition:.2s;white-space:nowrap;
+  }
+  .donate-item-buy:hover{
+    background:linear-gradient(90deg,var(--accent),var(--cyan));
+    border-color:transparent;color:#fff;
+    box-shadow:0 0 16px rgba(213,0,255,.4);
+  }
+
+  .donate-purchases-grid{
+    display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
+    gap:14px;
+  }
+  .donate-purchase{
+    border:1px solid var(--border-2);
+    background:linear-gradient(180deg,#0d0a0b,#0a0708);
+    padding:16px;position:relative;transition:.2s;
+  }
+  .donate-purchase:hover{border-color:rgba(213,0,255,.35);}
+  .donate-purchase-date{
+    position:absolute;top:10px;right:10px;
+    font-family:'JetBrains Mono',monospace;font-size:9px;
+    color:var(--muted);letter-spacing:1.5px;
+    text-transform:uppercase;background:rgba(0,0,0,.4);
+    padding:3px 8px;
+  }
+  .donate-purchase-icon{
+    width:80px;height:80px;margin:12px auto;
+    border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    font-size:38px;
+    box-shadow:0 0 20px rgba(213,0,255,.15);
+  }
+  .donate-purchase-name{
+    font-size:12px;font-weight:800;color:#fff;
+    text-align:center;margin-bottom:6px;line-height:1.4;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  }
+  .donate-purchase-buyer{
+    font-family:'JetBrains Mono',monospace;font-size:10px;
+    color:var(--muted);text-align:center;letter-spacing:.5px;
+  }
+  .donate-purchases-empty{
+    grid-column:1/-1;text-align:center;padding:40px 20px;
+    color:var(--muted);font-size:12px;letter-spacing:2px;
+    text-transform:uppercase;border:1px dashed var(--border-2);
+  }
+
+  .donate-socials-grid{
+    display:grid;grid-template-columns:1fr 1fr;gap:16px;max-width:800px;
+  }
+  .donate-social-big{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:22px 26px;border-radius:8px;
+    text-decoration:none;color:#fff;transition:.2s;
+    font-family:'Inter',sans-serif;
+  }
+  .donate-social-big.vk{background:#0077FF;}
+  .donate-social-big.discord{background:#5865F2;}
+  .donate-social-big:hover{transform:translateY(-3px);filter:brightness(1.1);}
+  .donate-social-big .left{display:flex;align-items:center;gap:14px;}
+  .donate-social-big .ico{
+    width:42px;height:42px;border-radius:8px;
+    background:rgba(255,255,255,.15);
+    display:flex;align-items:center;justify-content:center;
+    font-size:22px;
+  }
+  .donate-social-big .txt{font-weight:800;font-size:15px;line-height:1.2;}
+  .donate-social-big .txt small{display:block;font-size:11px;opacity:.8;font-weight:500;margin-top:2px;}
+
+  .cart-overlay,.payment-overlay{
+    position:fixed;inset:0;z-index:10003;
+    background:rgba(0,0,0,.78);
+    backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+    display:none;align-items:center;justify-content:center;padding:20px;
+    overflow-y:auto;
+  }
+  .cart-overlay.show,.payment-overlay.show{display:flex;animation:authFade .25s ease;}
+  .cart-modal,.payment-modal{
+    position:relative;background:linear-gradient(180deg,#0d0a0b,#0a0708);
+    border:1px solid var(--border-2);
+    padding:36px 32px;max-width:520px;width:100%;
+    box-shadow:0 0 90px rgba(213,0,255,.2);
+    animation:authSlide .3s ease;
+    max-height:90vh;overflow-y:auto;
+  }
+  .cart-modal::before,.payment-modal::before{
+    content:'';position:absolute;left:0;top:0;bottom:0;width:3px;
+    background:linear-gradient(180deg,var(--accent),var(--cyan));
+  }
+  .cart-modal h3,.payment-modal h3{
+    font-family:'JetBrains Mono',monospace;font-size:15px;
+    letter-spacing:2.5px;color:var(--accent);text-transform:uppercase;
+    margin-bottom:22px;text-align:center;font-weight:700;
+  }
+  .cart-close{
+    position:absolute;top:14px;right:14px;
+    background:transparent;border:1px solid var(--border-2);
+    color:var(--muted);width:30px;height:30px;cursor:pointer;
+    font-size:14px;transition:.2s;font-family:inherit;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .cart-close:hover{border-color:var(--accent);color:var(--accent);}
+  .cart-items{max-height:240px;overflow-y:auto;margin-bottom:16px;
+    border:1px solid var(--border-2);background:rgba(0,0,0,.3);}
+  .cart-item{
+    display:flex;justify-content:space-between;align-items:center;
+    padding:11px 14px;border-bottom:1px solid var(--border);
+    font-size:13px;color:#e0dde0;gap:10px;
+  }
+  .cart-item:last-child{border-bottom:none;}
+  .cart-item span:first-child{flex:1;}
+  .cart-item span:nth-child(2){
+    font-family:'JetBrains Mono',monospace;
+    color:var(--accent);font-weight:700;
+  }
+  .cart-item button{
+    background:transparent;border:none;color:var(--muted);
+    cursor:pointer;font-size:14px;padding:4px 8px;
+    transition:.2s;
+  }
+  .cart-item button:hover{color:#ff3b3b;}
+  .cart-empty{
+    padding:24px;text-align:center;color:var(--muted);
+    font-size:12px;letter-spacing:2px;text-transform:uppercase;
+  }
+  .cart-total{
+    display:flex;justify-content:space-between;align-items:center;
+    padding:14px 0;border-top:1px solid var(--border);
+    font-family:'JetBrains Mono',monospace;font-size:13px;
+    color:#c9c2c4;letter-spacing:1px;margin-bottom:20px;
+  }
+  .cart-total b{font-size:18px;color:#fff;}
+  .cart-form{display:flex;flex-direction:column;gap:12px;}
+  .cart-form input[type="text"],.cart-form input[type="email"]{
+    background:#0a0708;border:1px solid var(--border-2);
+    color:#fff;padding:12px 14px;
+    font-family:'JetBrains Mono',monospace;font-size:12px;
+    outline:none;transition:.2s;
+  }
+  .cart-form input:focus{border-color:var(--accent);}
+  .cart-agree{
+    display:flex;align-items:center;gap:10px;
+    font-size:12px;color:#c9c2c4;cursor:pointer;
+    padding:6px 0;user-select:none;
+  }
+  .cart-agree input{width:16px;height:16px;accent-color:var(--accent);cursor:pointer;}
+  .cart-submit{
+    background:var(--grad);color:#fff;border:none;
+    padding:14px 20px;cursor:pointer;
+    font-family:'JetBrains Mono',monospace;font-size:12px;
+    letter-spacing:2px;text-transform:uppercase;font-weight:700;
+    transition:.2s;margin-top:8px;
+  }
+  .cart-submit:hover{filter:brightness(1.15);box-shadow:0 0 20px rgba(213,0,255,.4);}
+
+  .payment-back{
+    display:inline-flex;align-items:center;gap:8px;
+    background:transparent;border:1px solid var(--border-2);
+    color:#c9c2c4;padding:9px 16px;cursor:pointer;
+    font-family:'JetBrains Mono',monospace;font-size:11px;
+    letter-spacing:1.5px;text-transform:uppercase;font-weight:600;
+    transition:.2s;margin-bottom:20px;
+  }
+  .payment-back:hover{border-color:var(--accent);color:#fff;}
+  .payment-grid{
+    display:grid;grid-template-columns:1fr 1fr;gap:10px;
+  }
+  .payment-method{
+    padding:16px 14px;border:1px solid var(--border-2);
+    background:linear-gradient(180deg,#0e0b0c,#0b0809);
+    color:#fff;cursor:pointer;transition:.2s;
+    font-family:inherit;font-size:13px;font-weight:600;
+    display:flex;flex-direction:column;align-items:center;gap:8px;
+    text-align:center;
+  }
+  .payment-method:hover{border-color:var(--accent);background:rgba(213,0,255,.05);}
+  .payment-method .ico{font-size:24px;}
+  .payment-method.disabled{opacity:.4;cursor:not-allowed;}
+  .payment-method.disabled:hover{border-color:var(--border-2);background:linear-gradient(180deg,#0e0b0c,#0b0809);}
+  .payment-note{
+    margin-top:20px;padding:14px 16px;
+    border:1px solid rgba(232,178,58,.4);background:rgba(232,178,58,.05);
+    font-size:12px;color:var(--yellow);text-align:center;
+    font-family:'JetBrains Mono',monospace;letter-spacing:1px;
+    line-height:1.6;
+  }
+
+  .dona-back-main{
+    display:inline-flex;align-items:center;gap:10px;
+    padding:11px 18px;border:1px solid var(--border-2);
+    background:transparent;color:#c9c2c4;cursor:pointer;
+    font-family:'JetBrains Mono',monospace;font-size:11px;
+    letter-spacing:2px;text-transform:uppercase;font-weight:600;
+    transition:.2s;margin-bottom:26px;text-decoration:none;
+  }
+  .dona-back-main:hover{border-color:var(--accent);color:#fff;}
+  .dona-product-item{
+    display:grid;
+    grid-template-columns:60px 1fr auto auto auto;
+    gap:14px;align-items:center;
+    padding:12px 16px;border:1px solid var(--border-2);
+    background:rgba(255,255,255,.01);margin-bottom:8px;
+    transition:.2s;
+  }
+  .dona-product-item:hover{border-color:rgba(213,0,255,.35);}
+  .dona-product-preview{
+    width:44px;height:44px;border-radius:4px;
+    display:flex;align-items:center;justify-content:center;
+    font-size:14px;font-weight:900;color:#fff;
+    box-shadow:inset 0 0 20px rgba(0,0,0,.4);
+  }
+  .dona-product-info strong{display:block;font-size:13px;color:#fff;margin-bottom:2px;}
+  .dona-product-info small{
+    font-family:'JetBrains Mono',monospace;font-size:10px;
+    color:var(--muted);letter-spacing:1px;
+  }
+  .dona-product-price{
+    font-family:'JetBrains Mono',monospace;font-size:13px;
+    color:var(--accent);font-weight:700;white-space:nowrap;
+  }
+  .dona-product-btn{
+    background:transparent;border:1px solid var(--border-2);
+    color:var(--muted);cursor:pointer;padding:6px 12px;
+    font-family:inherit;font-size:10px;letter-spacing:1px;
+    text-transform:uppercase;transition:.2s;
+  }
+  .dona-product-btn:hover{border-color:var(--accent);color:var(--accent);}
+  .dona-product-btn.del:hover{border-color:#ff3b3b;color:#ff3b3b;}
+  .dona-color-group{
+    display:grid;grid-template-columns:1fr 1fr;gap:12px;
+  }
+  .dona-color-pick{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:8px 12px;border:1px solid var(--border-2);
+    background:#0a0708;
+  }
+  .dona-color-pick label{font-size:11px;color:#c9c2c4;}
+  .dona-color-pick input[type="color"]{
+    -webkit-appearance:none;appearance:none;
+    width:40px;height:26px;background:transparent;
+    border:1px solid var(--border-2);cursor:pointer;padding:2px;
+  }
+  .dona-color-pick input[type="color"]::-webkit-color-swatch-wrapper{padding:0;}
+  .dona-color-pick input[type="color"]::-webkit-color-swatch{border:none;}
+
+  /* ================= MEDIA ================= */
   @media(max-width:960px){
     nav{padding:16px 20px;}
     .nav-links{display:none;}
@@ -731,10 +1191,27 @@
     .news-title{font-size:18px;}
     .adm-news-form .row{grid-template-columns:1fr;}
     .auth-modal{padding:32px 24px;}
+    .donate-topbar{padding:12px 18px;}
+    .donate-hero{padding:40px 20px;grid-template-columns:1fr;gap:30px;}
+    .donate-hero-visual{justify-self:stretch;max-width:100%;}
+    .donate-section{padding:40px 20px;}
+    .donate-products-header{grid-template-columns:1fr;gap:12px;}
+    .donate-filter-select,.donate-search-input{width:100%;min-width:0;}
+    .donate-socials-grid{grid-template-columns:1fr;}
+    .cart-modal,.payment-modal{padding:26px 20px;}
+    .payment-grid{grid-template-columns:1fr;}
+    .dona-product-item{grid-template-columns:50px 1fr auto;gap:10px;}
+    .dona-product-price{font-size:11px;}
+    .dona-product-btn{font-size:9px;padding:5px 8px;}
+    .donate-nav{gap:6px;}
+    .donate-nav-btn{padding:8px 12px;font-size:10px;}
+    .donate-cart-btn{padding:8px 14px;font-size:10px;}
+    .donate-logo .name{font-size:12px;letter-spacing:2px;}
   }
   @media(max-width:520px){
     .discord-widget-wrap iframe{height:220px;}
-    .hosting-dot{width:70px;height:70px;}
+    .hosting-dot{width:60px;height:60px;}
+    .hosting-dot-wrap{width:120px;height:120px;}
     .hosting-text{font-size:13px;letter-spacing:.5px;}
   }
 </style>
@@ -760,11 +1237,12 @@
       <li><a href="#info" data-page="info">Информация</a></li>
       <li><a href="#rules" data-page="rules">Правила</a></li>
       <li><a href="#news" data-page="news">Новости</a></li>
+      <li><a href="#donate" data-page="donate">Магазин</a></li>
       <li><a href="#play" class="nav-btn" data-play>Играть</a></li>
     </ul>
   </nav>
 
-  <!-- HOME -->
+  <!-- ============== HOME ============== -->
   <div class="page active" id="page-home">
     <header class="hero">
       <div class="hero-left">
@@ -877,7 +1355,7 @@
     </section>
   </div>
 
-  <!-- GUIDE -->
+  <!-- ============== GUIDE ============== -->
   <div class="page" id="page-guide">
     <main class="page-inner narrow">
       <div class="tab-bar">
@@ -1021,7 +1499,7 @@
     </main>
   </div>
 
-  <!-- INFO -->
+  <!-- ============== INFO ============== -->
   <div class="page" id="page-info">
     <main class="page-inner">
       <div class="tab-bar">
@@ -1134,7 +1612,7 @@
     </main>
   </div>
 
-  <!-- RULES -->
+  <!-- ============== RULES ============== -->
   <div class="page" id="page-rules">
     <main class="page-inner">
       <div class="tab-bar">
@@ -1371,7 +1849,7 @@
     </main>
   </div>
 
-  <!-- NEWS -->
+  <!-- ============== NEWS ============== -->
   <div class="page" id="page-news">
     <main class="page-inner">
       <div class="tab-bar">
@@ -1389,7 +1867,149 @@
     </main>
   </div>
 
-  <!-- ADMIN -->
+  <!-- ============== DONATE ============== -->
+  <div class="page" id="page-donate">
+    <div class="donate-topbar">
+      <button class="donate-logo" id="donateLogoBtn">
+        <span class="badge">RW</span>
+        <span class="name">RUBIXWORLD</span>
+      </button>
+      <div class="donate-nav">
+        <a class="donate-nav-btn" data-page="rules">📜 Правила</a>
+        <button class="donate-nav-btn" id="donateShopBtn">🛒 Магазин</button>
+        <button class="donate-cart-btn" id="donateCartBtn">
+          🛒 <span data-cart-total>0.00 ₽</span> →
+        </button>
+      </div>
+    </div>
+
+    <section class="donate-hero">
+      <div class="donate-hero-left">
+        <h1>RUBIX<span class="accent">WORLD</span></h1>
+        <h2>Уникальный сервер</h2>
+        <p>Сервер славится добрым коммьюнити, множеством интересных плагинов и отличной администрацией, а также лучшей оптимизацией на сервере.</p>
+        <button class="donate-hero-btn" id="donateScrollBtn">↓ К товарам</button>
+      </div>
+      <div class="donate-hero-visual"></div>
+    </section>
+
+    <section class="donate-section" id="donateProductsAnchor">
+      <div class="donate-products-header">
+        <h2 class="donate-section-title">Наши товары</h2>
+        <select class="donate-filter-select" id="donateServerSelect">
+          <option value="grief">Гриф</option>
+        </select>
+        <input class="donate-search-input" id="donateSearch" type="text" placeholder="Введите текст...">
+      </div>
+      <div class="donate-categories">
+        <button class="donate-cat-btn active" data-cat="all">Все товары</button>
+        <button class="donate-cat-btn" data-cat="privileges">💎 Привилегии</button>
+        <button class="donate-cat-btn" data-cat="cases">📦 Кейсы</button>
+        <button class="donate-cat-btn" data-cat="currency">💰 Валюта</button>
+        <button class="donate-cat-btn" data-cat="other">🎁 Другое</button>
+      </div>
+      <div class="donate-grid" id="donateGrid"></div>
+    </section>
+
+    <section class="donate-section">
+      <h2 class="donate-section-title">Последние покупки</h2>
+      <div class="donate-purchases-grid" id="donatePurchasesGrid"></div>
+    </section>
+
+    <section class="donate-section">
+      <h2 class="donate-section-title">Мы в социальных сетях</h2>
+      <div class="donate-socials-grid">
+        <a class="donate-social-big vk" data-social="vk" target="_blank" rel="noopener">
+          <span class="left">
+            <span class="ico">🅥</span>
+            <span class="txt">Мы во ВКонтакте<small>Сообщество проекта</small></span>
+          </span>
+          <span style="font-size:20px;">→</span>
+        </a>
+        <a class="donate-social-big discord" data-social="discord" target="_blank" rel="noopener">
+          <span class="left">
+            <span class="ico">💬</span>
+            <span class="txt">Мы в Discord<small>Основной чат</small></span>
+          </span>
+          <span style="font-size:20px;">→</span>
+        </a>
+      </div>
+    </section>
+  </div>
+
+  <!-- ============== DONATE ADMIN ============== -->
+  <div class="page" id="page-donate-admin">
+    <div class="admin-page">
+      <a class="dona-back-main" id="donateAdminBackMain">← Вернуться в обычное админ-меню</a>
+      <div class="adm-header">
+        <div class="adm-h1">ДОНАТ <span class="grad">ПАНЕЛЬ</span></div>
+        <p class="adm-sub">Управление товарами магазина RubixWorld. Добавляй, редактируй и удаляй привилегии.</p>
+      </div>
+
+      <div class="adm-grid">
+        <div class="adm-card wide">
+          <div class="adm-card-title"><span class="num">+</span> Добавить / редактировать товар</div>
+          <input type="hidden" id="dpId">
+          <div class="adm-field">
+            <label class="adm-label">Название</label>
+            <input class="adm-input" id="dpName" placeholder="Например: Guard">
+          </div>
+          <div class="adm-field">
+            <label class="adm-label">Описание (необязательно)</label>
+            <textarea class="adm-textarea" id="dpDesc" placeholder="Краткое описание привилегии"></textarea>
+          </div>
+          <div class="adm-news-form">
+            <div class="row">
+              <div class="adm-field">
+                <label class="adm-label">Цена (в рублях)</label>
+                <input class="adm-input" id="dpPrice" type="number" min="0" placeholder="99">
+              </div>
+              <div class="adm-field">
+                <label class="adm-label">Категория</label>
+                <select class="adm-select" id="dpCategory">
+                  <option value="privileges">💎 Привилегии</option>
+                  <option value="cases">📦 Кейсы</option>
+                  <option value="currency">💰 Валюта</option>
+                  <option value="other">🎁 Другое</option>
+                </select>
+              </div>
+            </div>
+            <div class="adm-field">
+              <label class="adm-label">URL картинки (необязательно)</label>
+              <input class="adm-input" id="dpImage" placeholder="https://...">
+            </div>
+            <div class="dona-color-group">
+              <div class="dona-color-pick">
+                <label>Цвет 1</label>
+                <input type="color" id="dpColorFrom" value="#D500FF">
+              </div>
+              <div class="dona-color-pick">
+                <label>Цвет 2</label>
+                <input type="color" id="dpColorTo" value="#00E5FF">
+              </div>
+            </div>
+            <div class="adm-field" style="margin-top:12px;">
+              <label class="adm-label">Команды после покупки (для будущего автовыполнения)</label>
+              <textarea class="adm-textarea" id="dpCommands" placeholder="Например: lp user %player% parent set guard"></textarea>
+            </div>
+            <div class="adm-field">
+              <label class="adm-label">Порядок сортировки (чем меньше, тем выше)</label>
+              <input class="adm-input" id="dpSort" type="number" value="0">
+            </div>
+            <button class="adm-btn adm-btn-primary" id="dpSave">💾 Сохранить товар</button>
+            <button class="adm-btn" id="dpReset">🧹 Очистить форму</button>
+          </div>
+        </div>
+
+        <div class="adm-card wide">
+          <div class="adm-card-title"><span class="num">▤</span> Список товаров</div>
+          <div id="dpList"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============== ADMIN ============== -->
   <div class="page" id="page-admin">
     <div class="admin-page">
       <div class="adm-header">
@@ -1406,6 +2026,7 @@
         <button class="adm-btn adm-btn-primary" id="admOpenDev" style="width:auto;padding:14px 26px;">🎨 Открыть Dev-Builder</button>
         <button class="adm-btn" id="admBack" style="width:auto;padding:14px 26px;">← Вернуться на сайт</button>
         <button class="adm-btn" id="admReload" style="width:auto;padding:14px 26px;">↻ Обновить из облака</button>
+        <button class="adm-btn" id="admOpenDonateAdmin" style="width:auto;padding:14px 26px;">💎 Настроить донат</button>
       </div>
 
       <div class="adm-grid">
@@ -1460,7 +2081,6 @@
             <input class="adm-input" id="inOnlineCount" type="text">
           </div>
         </div>
-		
 
         <div class="adm-card">
           <div class="adm-card-title"><span class="num">01</span> Проект</div>
@@ -1652,12 +2272,69 @@
   </div>
 </div>
 
+<div class="cart-overlay" id="cartOverlay">
+  <div class="cart-modal">
+    <button class="cart-close" id="cartClose">✕</button>
+    <h3>// Корзина</h3>
+    <div class="cart-items" id="cartItems"></div>
+    <div class="cart-total">
+      <span>Итого:</span>
+      <b id="cartTotalBig">0 ₽</b>
+    </div>
+    <form class="cart-form" id="cartForm">
+      <input type="text" id="cartNick" placeholder="Ник в игре" required maxlength="20">
+      <input type="email" id="cartEmail" placeholder="Email для чека" required>
+      <label class="cart-agree">
+        <input type="checkbox" id="cartAgree">
+        <span>Я согласен с правилами сервера и условиями покупки</span>
+      </label>
+      <button type="submit" class="cart-submit">Перейти к оплате →</button>
+    </form>
+  </div>
+</div>
+
+<div class="payment-overlay" id="paymentOverlay">
+  <div class="payment-modal">
+    <button class="payment-back" id="paymentBack">← Назад в корзину</button>
+    <h3>// Выбор способа оплаты</h3>
+    <div class="payment-grid">
+      <button class="payment-method disabled" type="button">
+        <span class="ico">💳</span>
+        <span>Банковская карта</span>
+      </button>
+      <button class="payment-method disabled" type="button">
+        <span class="ico">🏦</span>
+        <span>Сбербанк</span>
+      </button>
+      <button class="payment-method disabled" type="button">
+        <span class="ico">💠</span>
+        <span>PayPal</span>
+      </button>
+      <button class="payment-method disabled" type="button">
+        <span class="ico">💰</span>
+        <span>ЮMoney</span>
+      </button>
+      <button class="payment-method disabled" type="button">
+        <span class="ico">🪙</span>
+        <span>Криптовалюта</span>
+      </button>
+      <button class="payment-method disabled" type="button">
+        <span class="ico">📱</span>
+        <span>СБП</span>
+      </button>
+    </div>
+    <div class="payment-note">
+      ⚠️ Оплата временно недоступна — идёт настройка платёжной системы
+    </div>
+  </div>
+</div>
+
 <div class="dev-backdrop" id="devBackdrop"></div>
 <aside class="dev-panel" id="devPanel" aria-hidden="true">
   <div class="dev-head">
     <div>
       <div class="dev-title"><span class="dev-pulse"></span> DEV-BUILDER</div>
-      <div class="dev-sub">// RubixWorld Cloud v4</div>
+      <div class="dev-sub">// RubixWorld Cloud v5</div>
     </div>
     <button class="dev-close" id="devClose">✕</button>
   </div>
@@ -1711,6 +2388,8 @@ const SUPABASE_URL = 'https://ivxbavtknemozxyvtzny.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml2eGJhdnRrbmVtb3p4eXZ0em55Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODkyMTM0MzcsImV4cCI6MjEwNDc4OTQzN30.t9HLZYKiBugXvsSDovZvI3SYrQI8bckZQget87nH-2w';
 const TABLE = 'site_settings';
 const NEWS_TABLE = 'news';
+const DONATE_TABLE = 'donate_products';
+const PURCHASE_TABLE = 'donate_purchases';
 const STORAGE_BUCKET = 'news-images';
 
 const LOGIN_MAP = {
@@ -1778,6 +2457,12 @@ let C = JSON.parse(JSON.stringify(DEFAULTS.colors));
 let CONTENT = {};
 let USER = null;
 let NEWS_CACHE = [];
+let PRODUCTS = [];
+let PURCHASES = [];
+let CART = [];
+try{ CART = JSON.parse(sessionStorage.getItem('rw_cart') || '[]'); }catch(e){ CART = []; }
+let donateCategory = 'all';
+let donateSearch = '';
 
 // ================== TOAST ==================
 const toastEl = document.getElementById('toast');
@@ -1804,6 +2489,20 @@ function todayISO(){
   const m = String(d.getMonth()+1).padStart(2,'0');
   const day = String(d.getDate()).padStart(2,'0');
   return y + '-' + m + '-' + day;
+}
+
+// ================== AUTO SERVER STATUS ==================
+async function fetchServerStatus(){
+  if(!S.ip || S.ip.length < 3) return null;
+  try{
+    const res = await fetch('https://api.mcsrvstat.us/3/' + encodeURIComponent(S.ip));
+    if(!res.ok) return null;
+    const data = await res.json();
+    return data;
+  }catch(e){
+    console.error('Server status API error:', e);
+    return null;
+  }
 }
 
 // ================== LOAD / SAVE ==================
@@ -1854,19 +2553,6 @@ async function saveToCloud(){
   }catch(e){ console.error(e); toast('Ошибка сети', true); return false; }
 }
 
-// ================== AUTO SERVER STATUS ==================
-async function fetchServerStatus(){
-  if(!S.ip || S.ip.length < 3) return null;
-  try{
-    const res = await fetch('https://api.mcsrvstat.us/3/' + encodeURIComponent(S.ip));
-    if(!res.ok) return null;
-    const data = await res.json();
-    return data;
-  }catch(e){
-    console.error('Server status API error:', e);
-    return null;
-  }
-}
 // ================== NEWS ==================
 async function loadNews(){
   try{
@@ -1880,6 +2566,7 @@ async function loadNews(){
 function renderNews(){
   const list = document.getElementById('newsList');
   const empty = document.getElementById('newsEmpty');
+  if(!list || !empty) return;
   if(!NEWS_CACHE.length){
     list.innerHTML = '';
     empty.style.display = 'block';
@@ -1888,19 +2575,18 @@ function renderNews(){
   empty.style.display = 'none';
   list.innerHTML = NEWS_CACHE.map(p => {
     const imgs = (p.images && p.images.length)
-      ? `<div class="news-images">${p.images.map(u => `<img src="${esc(u)}" alt="" loading="lazy">`).join('')}</div>`
+      ? '<div class="news-images">' + p.images.map(u => '<img src="' + esc(u) + '" alt="" loading="lazy">').join('') + '</div>'
       : '';
     const body = esc(p.body).replace(/\n/g, '<br>');
-    return `
-      <article class="news-post">
-        <div class="news-head">
-          <h2 class="news-title">${esc(p.title)}</h2>
-          <time class="news-date">${esc(formatDate(p.published_at))}</time>
-        </div>
-        <div class="news-body">${body}</div>
-        ${imgs}
-        <div class="news-meta">Опубликовал: ${esc(p.author || 'Администрация')}</div>
-      </article>`;
+    return '<article class="news-post">' +
+        '<div class="news-head">' +
+          '<h2 class="news-title">' + esc(p.title) + '</h2>' +
+          '<time class="news-date">' + esc(formatDate(p.published_at)) + '</time>' +
+        '</div>' +
+        '<div class="news-body">' + body + '</div>' +
+        imgs +
+        '<div class="news-meta">Опубликовал: ' + esc(p.author || 'Администрация') + '</div>' +
+      '</article>';
   }).join('');
 }
 function renderAdminNews(){
@@ -1910,13 +2596,13 @@ function renderAdminNews(){
     list.innerHTML = '<div style="color:var(--muted);font-size:12px;padding:8px 0;font-family:JetBrains Mono,monospace;">Постов пока нет</div>';
     return;
   }
-  list.innerHTML = NEWS_CACHE.map(p => `
-    <div class="adm-news-item" data-id="${esc(p.id)}">
-      <span class="title">${esc(p.title)}</span>
-      <span class="date">${esc(formatDate(p.published_at))}</span>
-      <button class="del" data-del="${esc(p.id)}">Удалить</button>
-    </div>
-  `).join('');
+  list.innerHTML = NEWS_CACHE.map(p =>
+    '<div class="adm-news-item" data-id="' + esc(p.id) + '">' +
+      '<span class="title">' + esc(p.title) + '</span>' +
+      '<span class="date">' + esc(formatDate(p.published_at)) + '</span>' +
+      '<button class="del" data-del="' + esc(p.id) + '">Удалить</button>' +
+    '</div>'
+  ).join('');
 }
 async function uploadImages(files){
   if(!files || !files.length) return [];
@@ -1971,6 +2657,171 @@ async function deleteNews(id){
   await loadNews();
 }
 
+// ================== DONATE ==================
+async function loadProducts(){
+  try{
+    const { data, error } = await supa.from(DONATE_TABLE).select('*').order('sort_order', {ascending:true});
+    if(error){ console.error(error); return; }
+    PRODUCTS = data || [];
+    renderProducts();
+    renderAdminProducts();
+  }catch(e){ console.error(e); }
+}
+async function loadPurchases(){
+  try{
+    const { data, error } = await supa.from(PURCHASE_TABLE).select('*').order('created_at', {ascending:false}).limit(4);
+    if(error){ console.error(error); return; }
+    PURCHASES = data || [];
+    renderPurchases();
+  }catch(e){ console.error(e); }
+}
+function renderProducts(){
+  const grid = document.getElementById('donateGrid');
+  if(!grid) return;
+  let list = PRODUCTS.slice();
+  if(donateCategory !== 'all') list = list.filter(p => p.category === donateCategory);
+  if(donateSearch) list = list.filter(p => p.name.toLowerCase().includes(donateSearch.toLowerCase()));
+  if(!list.length){
+    grid.innerHTML = '<div class="donate-empty">Товаров пока нет</div>';
+    return;
+  }
+  grid.innerHTML = list.map(p => {
+    const grad = 'linear-gradient(135deg, ' + p.color_from + ', ' + p.color_to + ')';
+    const img = p.image_url ? '<img src="' + esc(p.image_url) + '" alt="">' : '<div class="donate-item-placeholder"></div>';
+    return '<div class="donate-item" style="--from:' + esc(p.color_from) + ';--to:' + esc(p.color_to) + '">' +
+        '<div class="donate-item-name">' + esc(p.name) + '</div>' +
+        '<div class="donate-item-img" style="background:' + grad + '">' + img + '</div>' +
+        '<div class="donate-item-bottom">' +
+          '<span class="donate-item-price">' + p.price + ' ₽</span>' +
+          '<button class="donate-item-buy" data-buy="' + esc(p.id) + '">🛒 В корзину</button>' +
+        '</div>' +
+      '</div>';
+  }).join('');
+}
+function renderPurchases(){
+  const grid = document.getElementById('donatePurchasesGrid');
+  if(!grid) return;
+  if(!PURCHASES.length){
+    grid.innerHTML = '<div class="donate-purchases-empty">Покупок пока нет</div>';
+    return;
+  }
+  grid.innerHTML = PURCHASES.map(p => {
+    const product = PRODUCTS.find(x => x.id === p.product_id);
+    const from = product ? product.color_from : '#D500FF';
+    const to = product ? product.color_to : '#00E5FF';
+    const grad = 'linear-gradient(135deg, ' + from + ', ' + to + ')';
+    const dt = new Date(p.created_at);
+    const diff = Math.floor((Date.now() - dt.getTime()) / 86400000);
+    const dayText = diff === 0 ? 'Сегодня' : diff === 1 ? '1 день назад' : diff + ' дней назад';
+    return '<div class="donate-purchase">' +
+        '<div class="donate-purchase-date">' + dayText + '</div>' +
+        '<div class="donate-purchase-icon" style="background:' + grad + '">🎁</div>' +
+        '<div class="donate-purchase-name">' + esc(p.product_name || 'Товар') + '</div>' +
+        '<div class="donate-purchase-buyer">👤 ' + esc(p.buyer_nick || 'Аноним') + '</div>' +
+      '</div>';
+  }).join('');
+}
+function renderAdminProducts(){
+  const list = document.getElementById('dpList');
+  if(!list) return;
+  if(!PRODUCTS.length){
+    list.innerHTML = '<div style="color:var(--muted);font-size:12px;padding:14px;font-family:JetBrains Mono,monospace;">Товаров пока нет — добавь первый выше</div>';
+    return;
+  }
+  list.innerHTML = PRODUCTS.map(p => {
+    const grad = 'linear-gradient(135deg, ' + p.color_from + ', ' + p.color_to + ')';
+    const cat = {privileges:'Привилегия', cases:'Кейс', currency:'Валюта', other:'Другое'}[p.category] || p.category;
+    return '<div class="dona-product-item">' +
+        '<div class="dona-product-preview" style="background:' + grad + '">' + esc(p.name.charAt(0)) + '</div>' +
+        '<div class="dona-product-info">' +
+          '<strong>' + esc(p.name) + '</strong>' +
+          '<small>' + esc(cat) + ' · #' + (p.sort_order || 0) + '</small>' +
+        '</div>' +
+        '<span class="dona-product-price">' + p.price + ' ₽</span>' +
+        '<button class="dona-product-btn" data-edit="' + esc(p.id) + '">✎ Изменить</button>' +
+        '<button class="dona-product-btn del" data-dpdel="' + esc(p.id) + '">✕ Удалить</button>' +
+      '</div>';
+  }).join('');
+}
+function saveCart(){ try{ sessionStorage.setItem('rw_cart', JSON.stringify(CART)); }catch(e){} }
+function updateCartUI(){
+  const total = CART.reduce((s, it) => s + (+it.price || 0), 0);
+  document.querySelectorAll('[data-cart-total]').forEach(el => {
+    el.textContent = total.toFixed(2) + ' ₽';
+  });
+  const items = document.getElementById('cartItems');
+  if(items){
+    if(!CART.length){
+      items.innerHTML = '<div class="cart-empty">Корзина пуста</div>';
+    } else {
+      items.innerHTML = CART.map((it, i) =>
+        '<div class="cart-item">' +
+          '<span>' + esc(it.name) + '</span>' +
+          '<span>' + it.price + ' ₽</span>' +
+          '<button data-cartremove="' + i + '" title="Удалить">✕</button>' +
+        '</div>'
+      ).join('');
+    }
+  }
+  const big = document.getElementById('cartTotalBig');
+  if(big) big.textContent = total + ' ₽';
+}
+function addToCart(id){
+  const p = PRODUCTS.find(x => x.id === id);
+  if(!p) return;
+  CART.push({id: p.id, name: p.name, price: p.price});
+  saveCart(); updateCartUI();
+  toast('Добавлено: ' + p.name);
+}
+function removeFromCart(i){
+  CART.splice(i, 1);
+  saveCart(); updateCartUI();
+}
+async function saveDonateProduct(){
+  if(!USER){ toast('Войдите как администратор', true); return; }
+  const id = document.getElementById('dpId').value.trim();
+  const name = document.getElementById('dpName').value.trim();
+  if(!name){ toast('Введите название', true); return; }
+  const data = {
+    name: name,
+    description: document.getElementById('dpDesc').value.trim(),
+    price: +document.getElementById('dpPrice').value || 0,
+    category: document.getElementById('dpCategory').value,
+    image_url: document.getElementById('dpImage').value.trim(),
+    color_from: document.getElementById('dpColorFrom').value,
+    color_to: document.getElementById('dpColorTo').value,
+    commands: document.getElementById('dpCommands').value.trim(),
+    sort_order: +document.getElementById('dpSort').value || 0
+  };
+  let error;
+  if(id){
+    ({error} = await supa.from(DONATE_TABLE).update(data).eq('id', id));
+  } else {
+    ({error} = await supa.from(DONATE_TABLE).insert(data));
+  }
+  if(error){ toast('Ошибка: ' + error.message, true); return; }
+  toast(id ? 'Обновлено' : 'Товар добавлен');
+  resetDonateForm();
+  await loadProducts();
+}
+async function deleteDonateProduct(id){
+  if(!USER){ toast('Войдите как администратор', true); return; }
+  if(!confirm('Удалить этот товар?')) return;
+  const { error } = await supa.from(DONATE_TABLE).delete().eq('id', id);
+  if(error){ toast('Ошибка: ' + error.message, true); return; }
+  toast('Удалено');
+  await loadProducts();
+}
+function resetDonateForm(){
+  ['dpId','dpName','dpDesc','dpPrice','dpImage','dpCommands','dpSort'].forEach(id => {
+    const el = document.getElementById(id);
+    if(el) el.value = '';
+  });
+  const cat = document.getElementById('dpCategory'); if(cat) cat.value = 'privileges';
+  const cf = document.getElementById('dpColorFrom'); if(cf) cf.value = '#D500FF';
+  const ct = document.getElementById('dpColorTo'); if(ct) ct.value = '#00E5FF';
+}
+
 // ================== AUTH ==================
 async function checkSession(){
   const { data } = await supa.auth.getSession();
@@ -1981,6 +2832,7 @@ async function checkSession(){
 function updateAuthUI(){
   const line = document.getElementById('admUserLine');
   const name = document.getElementById('admUserName');
+  if(!line || !name) return;
   if(USER){
     line.style.display = 'flex';
     name.textContent = '// ' + (USER.email || '').split('@')[0];
@@ -2043,6 +2895,8 @@ const pages = {
   info: document.getElementById('page-info'),
   rules: document.getElementById('page-rules'),
   news: document.getElementById('page-news'),
+  donate: document.getElementById('page-donate'),
+  donateAdmin: document.getElementById('page-donate-admin'),
   admin: document.getElementById('page-admin')
 };
 const titles = {
@@ -2051,6 +2905,8 @@ const titles = {
   info:'Информация — RubixWorld',
   rules:'Правила — RubixWorld',
   news:'Новости — RubixWorld',
+  donate:'Магазин — RubixWorld',
+  donateAdmin:'Донат-панель — RubixWorld',
   admin:'Админ-меню — RubixWorld'
 };
 const footerText = {
@@ -2059,6 +2915,8 @@ const footerText = {
   info:'© 2026 RubixWorld // Project Information',
   rules:'© 2026 RubixWorld // Server Rules',
   news:'© 2026 RubixWorld // Project News',
+  donate:'© 2026 RubixWorld // Магазин',
+  donateAdmin:'© 2026 RubixWorld // Donate Admin',
   admin:'© 2026 RubixWorld // Admin Panel'
 };
 function setActiveNav(name){
@@ -2069,7 +2927,7 @@ function setActiveNav(name){
 function updateSaveBtnVisibility(){
   const btn = document.getElementById('rwSaveBtn');
   if(!btn) return;
-  const onAdmin = pages.admin.classList.contains('active');
+  const onAdmin = pages.admin && pages.admin.classList.contains('active');
   btn.classList.toggle('visible', onAdmin && !!USER);
   btn.disabled = !USER;
 }
@@ -2077,16 +2935,21 @@ function goTo(name, push){
   if(!pages[name]) name = 'home';
   Object.keys(pages).forEach(k => pages[k].classList.toggle('active', k === name));
   document.title = titles[name];
-  document.getElementById('footerCopy').textContent = footerText[name];
+  const fcopy = document.getElementById('footerCopy');
+  if(fcopy) fcopy.textContent = footerText[name];
   setActiveNav(name);
   if(push !== false){ window.scrollTo({top:0, behavior:'instant' in window ? 'instant' : 'auto'}); }
-  document.getElementById('menu').classList.remove('open');
+  const menu = document.getElementById('menu');
+  if(menu) menu.classList.remove('open');
   if(window.location.hash !== '#' + name){
     try{ history.pushState(null, '', '#' + name); }catch(e){}
   }
   checkMaintenance();
   updateSaveBtnVisibility();
+  document.body.classList.toggle('donate-active', name === 'donate' || name === 'donateAdmin');
   if(name === 'news'){ loadNews(); }
+  if(name === 'donate'){ loadProducts(); loadPurchases(); }
+  if(name === 'donateAdmin'){ renderAdminProducts(); }
 }
 document.getElementById('burger').addEventListener('click', () => {
   document.getElementById('menu').classList.toggle('open');
@@ -2104,6 +2967,45 @@ document.addEventListener('click', (e) => {
   }
   const del = e.target.closest('[data-del]');
   if(del){ e.preventDefault(); deleteNews(del.dataset.del); return; }
+
+  const buy = e.target.closest('[data-buy]');
+  if(buy){ e.preventDefault(); addToCart(buy.dataset.buy); return; }
+
+  const rem = e.target.closest('[data-cartremove]');
+  if(rem){ e.preventDefault(); removeFromCart(+rem.dataset.cartremove); return; }
+
+  const cat = e.target.closest('.donate-cat-btn');
+  if(cat){
+    e.preventDefault();
+    document.querySelectorAll('.donate-cat-btn').forEach(b => b.classList.toggle('active', b === cat));
+    donateCategory = cat.dataset.cat;
+    renderProducts();
+    return;
+  }
+
+  const edit = e.target.closest('[data-edit]');
+  if(edit){
+    e.preventDefault();
+    const p = PRODUCTS.find(x => x.id === edit.dataset.edit);
+    if(!p) return;
+    document.getElementById('dpId').value = p.id;
+    document.getElementById('dpName').value = p.name;
+    document.getElementById('dpDesc').value = p.description || '';
+    document.getElementById('dpPrice').value = p.price;
+    document.getElementById('dpCategory').value = p.category || 'privileges';
+    document.getElementById('dpImage').value = p.image_url || '';
+    document.getElementById('dpColorFrom').value = p.color_from || '#D500FF';
+    document.getElementById('dpColorTo').value = p.color_to || '#00E5FF';
+    document.getElementById('dpCommands').value = p.commands || '';
+    document.getElementById('dpSort').value = p.sort_order || 0;
+    const pg = document.querySelector('#page-donate-admin .admin-page');
+    if(pg) pg.scrollIntoView({behavior:'smooth'});
+    toast('Редактирование: ' + p.name);
+    return;
+  }
+
+  const dpdel = e.target.closest('[data-dpdel]');
+  if(dpdel){ e.preventDefault(); deleteDonateProduct(dpdel.dataset.dpdel); return; }
 
   const el = e.target.closest('[data-page]');
   if(el){ e.preventDefault(); goTo(el.dataset.page); return; }
@@ -2254,8 +3156,8 @@ function applyDev(){
   if(dc && document.activeElement !== dc) dc.value = D.customCSS || '';
   document.body.classList.toggle('show-grid', !!D.grid);
   document.body.classList.toggle('show-borders', !!D.borders);
-  document.getElementById('swGrid').classList.toggle('on', !!D.grid);
-  document.getElementById('swBorders').classList.toggle('on', !!D.borders);
+  const swG = document.getElementById('swGrid'); if(swG) swG.classList.toggle('on', !!D.grid);
+  const swB = document.getElementById('swBorders'); if(swB) swB.classList.toggle('on', !!D.borders);
 }
 function applyHostingStatus(){
   const state = HOSTING_STATES[S.hostingStatus] || HOSTING_STATES.normal;
@@ -2329,7 +3231,6 @@ function applySettings(){
   document.getElementById('warnVersion').textContent = S.verRec;
   document.getElementById('miniMode').textContent = S.mode;
   document.getElementById('miniGrief').textContent = S.grief ? 'Включён' : 'Выключен';
-  document.getElementById('homeOnline').textContent = S.onlineCount || '—';
 
   const w = document.getElementById('welcomeText');
   if(w) w.innerHTML = S.welcome;
@@ -2384,7 +3285,6 @@ function applySettings(){
 
   applyHostingStatus();
 
-  // Восстанавливаем тексты и обновляем плейсхолдеры {{IP}} и т.д.
   if(CONTENT.__v === CONTENT_VERSION){
     editables.forEach(el => {
       if(el.dataset.edit && CONTENT[el.dataset.edit]){
@@ -2400,7 +3300,7 @@ function applyAll(){ applyColors(); applyEffects(); applyDev(); applySettings();
 function checkMaintenance(){
   const mnt = document.getElementById('maintenance');
   if(!mnt) return;
-  const onAdmin = pages.admin.classList.contains('active');
+  const onAdmin = pages.admin && pages.admin.classList.contains('active');
   const bypass = sessionStorage.getItem('rw_mnt_bypass') === '1';
   const show = S.maintenance && !onAdmin && !bypass;
   mnt.classList.toggle('show', show);
@@ -2436,9 +3336,22 @@ document.getElementById('admReload').addEventListener('click', async () => {
   toast('Загрузка из облака...');
   await loadFromCloud();
   await loadNews();
+  await loadProducts();
+  await loadPurchases();
   applyAll();
   toast('✓ Данные обновлены');
 });
+document.getElementById('admOpenDev').addEventListener('click', (e) => {
+  e.preventDefault(); e.stopPropagation(); openDev();
+}, true);
+document.getElementById('admOpenDonateAdmin').addEventListener('click', (e) => {
+  e.preventDefault(); e.stopPropagation();
+  if(!USER){ toast('Войдите как администратор', true); return; }
+  goTo('donateAdmin');
+}, true);
+document.getElementById('donateAdminBackMain').addEventListener('click', (e) => {
+  e.preventDefault(); e.stopPropagation(); goTo('admin');
+}, true);
 
 // ================== MAINTENANCE RELOAD ==================
 document.getElementById('mntReload').addEventListener('click', (e) => {
@@ -2468,6 +3381,56 @@ document.getElementById('rwSaveBtn').addEventListener('click', async () => {
 
 // ================== NEWS PUBLISH ==================
 document.getElementById('btnPublishNews').addEventListener('click', publishNews);
+
+// ================== DONATE BINDINGS ==================
+document.getElementById('donateSearch')?.addEventListener('input', (e) => {
+  donateSearch = e.target.value.trim();
+  renderProducts();
+});
+document.getElementById('donateShopBtn')?.addEventListener('click', () => {
+  const anchor = document.getElementById('donateProductsAnchor');
+  if(anchor) anchor.scrollIntoView({behavior:'smooth', block:'start'});
+});
+document.getElementById('donateScrollBtn')?.addEventListener('click', () => {
+  const anchor = document.getElementById('donateProductsAnchor');
+  if(anchor) anchor.scrollIntoView({behavior:'smooth', block:'start'});
+});
+document.getElementById('donateCartBtn')?.addEventListener('click', () => {
+  document.getElementById('cartOverlay').classList.add('show');
+  updateCartUI();
+});
+document.getElementById('donateLogoBtn')?.addEventListener('click', (e) => {
+  if((e.ctrlKey || e.metaKey) && e.shiftKey){
+    e.preventDefault(); e.stopPropagation();
+    if(USER){ goTo('admin'); toast('Админ-меню открыто'); }
+    else { openAuthOverlay(); }
+  } else {
+    goTo('home');
+  }
+}, true);
+document.getElementById('cartClose')?.addEventListener('click', () => {
+  document.getElementById('cartOverlay').classList.remove('show');
+});
+document.getElementById('cartOverlay')?.addEventListener('click', (e) => {
+  if(e.target === e.currentTarget) e.currentTarget.classList.remove('show');
+});
+document.getElementById('cartForm')?.addEventListener('submit', (e) => {
+  e.preventDefault();
+  const nick = document.getElementById('cartNick').value.trim();
+  const email = document.getElementById('cartEmail').value.trim();
+  const agree = document.getElementById('cartAgree').checked;
+  if(!CART.length){ toast('Корзина пуста', true); return; }
+  if(!nick || !email){ toast('Заполните все поля', true); return; }
+  if(!agree){ toast('Подтвердите согласие с правилами', true); return; }
+  document.getElementById('cartOverlay').classList.remove('show');
+  document.getElementById('paymentOverlay').classList.add('show');
+});
+document.getElementById('paymentBack')?.addEventListener('click', () => {
+  document.getElementById('paymentOverlay').classList.remove('show');
+  document.getElementById('cartOverlay').classList.add('show');
+});
+document.getElementById('dpSave')?.addEventListener('click', saveDonateProduct);
+document.getElementById('dpReset')?.addEventListener('click', resetDonateForm);
 
 // ================== ADMIN INPUTS ==================
 function bindInput(id, key){
@@ -2581,9 +3544,8 @@ document.getElementById('fileImportJSON').addEventListener('change', (e) => {
   r.readAsText(f);
 });
 document.getElementById('btnClearContent').addEventListener('click', async () => {
-  if(!confirm('Очистить все сохранённые тексты? Откатятся к стандартным. После этого нажми СОХРАНИТЬ.')) return;
+  if(!confirm('Очистить все сохранённые тексты? Откатятся к стандартным.')) return;
   CONTENT = { __v: CONTENT_VERSION };
-  // Сразу применяем — сбрасываем тексты к дефолту из HTML
   location.reload();
 });
 document.getElementById('btnResetAll').addEventListener('click', () => {
@@ -2613,9 +3575,6 @@ function closeDev(){
 }
 document.getElementById('devClose').addEventListener('click', closeDev);
 devBackdrop.addEventListener('click', closeDev);
-document.getElementById('admOpenDev').addEventListener('click', (e) => {
-  e.preventDefault(); e.stopPropagation(); openDev();
-}, true);
 
 [['devRadius','radius'],['devBorderW','borderW'],['devOpacity','opacity'],
  ['devFont','font'],['devAnim','anim']].forEach(pair => {
@@ -2663,6 +3622,8 @@ document.addEventListener('keydown', (e) => {
     closeDev();
     document.body.classList.remove('preview-mode');
     closeAuthOverlay();
+    document.getElementById('cartOverlay')?.classList.remove('show');
+    document.getElementById('paymentOverlay')?.classList.remove('show');
   }
   if((e.key === 'f' || e.key === 'F') && !e.ctrlKey && !e.metaKey && !e.altKey){
     const tag = (document.activeElement && document.activeElement.tagName) || '';
@@ -2686,7 +3647,7 @@ document.getElementById('devInspect').addEventListener('click', (e) => {
 }, true);
 document.addEventListener('click', (e) => {
   if(!inspectMode) return;
-  const t = e.target.closest('section, header, nav, footer, .section, .card, .pcard, .group, .info-panel, .mini, .role, .step, .social-card, .ip-bar, .status-card, .monitor, .hero, .mnt-card, .discord-widget-wrap, .rules-content, .news-post');
+  const t = e.target.closest('section, header, nav, footer, .section, .card, .pcard, .group, .info-panel, .mini, .role, .step, .social-card, .ip-bar, .status-card, .monitor, .hero, .mnt-card, .discord-widget-wrap, .rules-content, .news-post, .donate-item');
   if(!t) return;
   e.preventDefault(); e.stopPropagation();
   const cls = Array.from(t.classList).join('.');
@@ -2744,30 +3705,8 @@ function fallbackCopy(text){
   ta.remove();
 }
 
-// ================== INIT ==================
-(async function init(){
-  document.getElementById('newsDate').value = todayISO();
-  await checkSession();
-  await loadFromCloud();
-  await loadNews();
-  applyAll();
-  routeFromHash();
-  updateSaveBtnVisibility();
-
-  setTimeout(() => {
-    document.getElementById('loadingOverlay').classList.add('hide');
-  }, 400);
-})();
-
-supa.auth.onAuthStateChange((_event, session) => {
-  USER = session ? session.user : null;
-  updateAuthUI();
-  updateSaveBtnVisibility();
-});
-
-// ================== PARALLAX на мониторе ==================
+// ================== PARALLAX ==================
 (function(){
-  // Только для мыши, на тачах не работает
   if(!window.matchMedia('(pointer:fine)').matches) return;
   const hero = document.querySelector('.hero');
   const monitor = document.querySelector('.monitor');
@@ -2792,6 +3731,30 @@ supa.auth.onAuthStateChange((_event, session) => {
   }
   loop();
 })();
+
+// ================== INIT ==================
+(async function init(){
+  document.getElementById('newsDate').value = todayISO();
+  await checkSession();
+  await loadFromCloud();
+  await loadNews();
+  await loadProducts();
+  await loadPurchases();
+  updateCartUI();
+  applyAll();
+  routeFromHash();
+  updateSaveBtnVisibility();
+
+  setTimeout(() => {
+    document.getElementById('loadingOverlay').classList.add('hide');
+  }, 400);
+})();
+
+supa.auth.onAuthStateChange((_event, session) => {
+  USER = session ? session.user : null;
+  updateAuthUI();
+  updateSaveBtnVisibility();
+});
 
 })();
 </script>
