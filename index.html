@@ -881,7 +881,7 @@
         <div class="step">
           <div class="step-num">ШАГ 03</div>
           <h4>Добавь сервер</h4>
-          <p>Нажми «Добавить сервер» и вставь IP: <code>{{IP}}</code></p>
+          <p>Нажми «Добавить сервер» и вставь IP: <code id="guideIP">rubixworld.mclan.ru</code></p>
         </div>
         <div class="step">
           <div class="step-num">ШАГ 04</div>
@@ -2223,6 +2223,7 @@ function applySettings(){
   document.querySelectorAll('footer .brand-box').forEach(el => el.textContent = S.logoBadge || 'RW');
 
   document.getElementById('ipValue').textContent = S.ip;
+  document.getElementById('guideIP').textContent = S.ip;
 
   const sm = {
     online:{text:'Сервер онлайн', color:'var(--green)', sub:'Актуальный статус проекта'},
