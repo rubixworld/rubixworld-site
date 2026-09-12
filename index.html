@@ -1420,13 +1420,22 @@
               <option value="online">🟢 Онлайн</option>
               <option value="offline">🔴 Выключен</option>
               <option value="maintenance">🟡 Тех. работы</option>
+              <option value="auto">🔄 Автоматически (через API)</option>
             </select>
           </div>
           <div class="adm-field">
             <label class="adm-label">Онлайн игроков</label>
+            <select class="adm-select" id="inOnlineMode">
+              <option value="manual">Ввести самому</option>
+              <option value="auto">Определить автоматически</option>
+            </select>
+          </div>
+          <div class="adm-field" id="manualOnlineField">
+            <label class="adm-label">Количество игроков (вручную)</label>
             <input class="adm-input" id="inOnlineCount" type="text">
           </div>
         </div>
+		
 
         <div class="adm-card">
           <div class="adm-card-title"><span class="num">01</span> Проект</div>
@@ -1704,7 +1713,8 @@ const DEFAULTS = {
     logoBadge:'RW', brandName:'RUBIXWORLD', favicon:'RW',
     discordWidget:true,
     discordWidgetId:'1542223655680081974',
-    hostingStatus:'normal'
+    hostingStatus:'normal',
+    onlineMode:'manual'
   },
   effects:{ gradTitle:true, glow:true, radar:true },
   dev:{ radius:0, borderW:1, opacity:98, font:100, anim:100,
@@ -1730,7 +1740,7 @@ const DB_MAP = {
   welcome:'welcome',
   logo_badge:'logoBadge', brand_name:'brandName', favicon:'favicon',
   discord_widget:'discordWidget', discord_widget_id:'discordWidgetId',
-  hosting_status:'hostingStatus'
+  hosting_status:'hostingStatus', online_mode:'onlineMode'
 };
 const DB_MAP_REVERSE = {};
 Object.keys(DB_MAP).forEach(k => { DB_MAP_REVERSE[DB_MAP[k]] = k; });
@@ -1819,6 +1829,19 @@ async function saveToCloud(){
   }catch(e){ console.error(e); toast('Ошибка сети', true); return false; }
 }
 
+// ================== AUTO SERVER STATUS ==================
+async function fetchServerStatus(){
+  if(!S.ip || S.ip.length < 3) return null;
+  try{
+    const res = await fetch('https://api.mcsrvstat.us/3/' + encodeURIComponent(S.ip));
+    if(!res.ok) return null;
+    const data = await res.json();
+    return data;
+  }catch(e){
+    console.error('Server status API error:', e);
+    return null;
+  }
+}
 // ================== NEWS ==================
 async function loadNews(){
   try{
@@ -2225,19 +2248,52 @@ function applySettings(){
   document.getElementById('ipValue').textContent = S.ip;
   document.getElementById('guideIP').textContent = S.ip;
 
-  const sm = {
-    online:{text:'Сервер онлайн', color:'var(--green)', sub:'Актуальный статус проекта'},
-    offline:{text:'Сервер выключен', color:'#ff3b3b', sub:'Сервер временно недоступен'},
-    maintenance:{text:'Тех. работы', color:'var(--yellow)', sub:'Проводятся технические работы'}
-  }[S.serverStatus] || {text:'Сервер онлайн', color:'var(--green)', sub:'Актуальный статус проекта'};
+  // ===== СТАТУС СЕРВЕРА =====
+  const SM = {
+    online:      { text:'Сервер онлайн',   color:'var(--green)',  sub:'Актуальный статус проекта' },
+    offline:     { text:'Сервер выключен', color:'#ff3b3b',       sub:'Сервер временно недоступен' },
+    maintenance: { text:'Тех. работы',     color:'var(--yellow)', sub:'Проводятся технические работы' }
+  };
 
-  const hDot = document.getElementById('homeStatusDot');
-  if(hDot){ hDot.style.background = sm.color; hDot.style.boxShadow = '0 0 14px ' + sm.color; }
-  document.getElementById('homeStatusText').textContent = sm.text;
-  document.getElementById('homeStatusSub').textContent = sm.sub;
-  const iDot = document.getElementById('infoStatusDot');
-  if(iDot){ iDot.style.background = sm.color; iDot.style.boxShadow = '0 0 16px ' + sm.color; }
-  document.getElementById('infoStatusText').textContent = sm.text;
+  function renderServerStatus(state){
+    const hDot = document.getElementById('homeStatusDot');
+    if(hDot){ hDot.style.background = state.color; hDot.style.boxShadow = '0 0 14px ' + state.color; }
+    document.getElementById('homeStatusText').textContent = state.text;
+    document.getElementById('homeStatusSub').textContent = state.sub;
+    const iDot = document.getElementById('infoStatusDot');
+    if(iDot){ iDot.style.background = state.color; iDot.style.boxShadow = '0 0 16px ' + state.color; }
+    document.getElementById('infoStatusText').textContent = state.text;
+  }
+
+  if(S.serverStatus === 'auto'){
+    const checking = { text:'Проверка...', color:'var(--muted)', sub:'Запрос к серверу' };
+    renderServerStatus(checking);
+    fetchServerStatus().then(data => {
+      const isOnline = data && data.online === true;
+      renderServerStatus(isOnline ? SM.online : SM.offline);
+    });
+  } else {
+    renderServerStatus(SM[S.serverStatus] || SM.online);
+  }
+
+  // ===== ОНЛАЙН ИГРОКОВ =====
+  const onlineField = document.getElementById('manualOnlineField');
+  if(S.onlineMode === 'auto'){
+    if(onlineField) onlineField.style.display = 'none';
+    document.getElementById('homeOnline').textContent = '...';
+    fetchServerStatus().then(data => {
+      const el = document.getElementById('homeOnline');
+      if(!el) return;
+      if(data && data.online && data.players && typeof data.players.online === 'number'){
+        el.textContent = data.players.online;
+      } else {
+        el.textContent = '—';
+      }
+    });
+  } else {
+    if(onlineField) onlineField.style.display = '';
+    document.getElementById('homeOnline').textContent = S.onlineCount || '—';
+  }
 
   const ps = S.projectStatus === 'custom' ? (S.projectStatusCustom || '—') : S.projectStatus;
   document.getElementById('homeProjectStatus').textContent = ps;
@@ -2290,7 +2346,8 @@ function applySettings(){
     inWelcome:S.welcome, inLogoBadge:S.logoBadge, inBrandName:S.brandName,
     inFavicon:S.favicon, inOnlineCount:S.onlineCount,
     inServerStatus:S.serverStatus, inMaintMsg:S.maintMsg, inMaintTime:S.maintTime,
-    inDiscordWidgetId:S.discordWidgetId, inHostingStatus:S.hostingStatus
+    inDiscordWidgetId:S.discordWidgetId, inHostingStatus:S.hostingStatus,
+    inOnlineMode:S.onlineMode
   };
   Object.keys(inputs).forEach(id => {
     const el = document.getElementById(id);
@@ -2402,7 +2459,7 @@ function bindInput(id, key){
  'inVK:vk','inWelcome:welcome','inLogoBadge:logoBadge','inBrandName:brandName',
  'inFavicon:favicon','inOnlineCount:onlineCount','inServerStatus:serverStatus',
  'inMaintMsg:maintMsg','inMaintTime:maintTime','inDiscordWidgetId:discordWidgetId',
- 'inHostingStatus:hostingStatus'].forEach(pair => {
+ 'inHostingStatus:hostingStatus','inOnlineMode:onlineMode'].forEach(pair => {
   const p = pair.split(':'); bindInput(p[0], p[1]);
 });
 ['inAccent:accent','inAccent2:accent2','inCyan:cyan','inBg:bg'].forEach(pair => {
