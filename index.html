@@ -116,18 +116,35 @@
     padding:12px 20px;border-top:1px solid var(--border);
     font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;
     color:var(--muted-2);text-transform:uppercase;}
+  .monitor .frame-corner{position:absolute;width:22px;height:22px;z-index:3;
+    pointer-events:none;transition:.3s;}
+  .monitor .fc-tl{top:-1px;left:-1px;border-top:2px solid var(--accent);border-left:2px solid var(--accent);}
+  .monitor .fc-tr{top:-1px;right:-1px;border-top:2px solid var(--accent);border-right:2px solid var(--accent);}
+  .monitor .fc-bl{bottom:-1px;left:-1px;border-bottom:2px solid var(--accent);border-left:2px solid var(--accent);}
+  .monitor .fc-br{bottom:-1px;right:-1px;border-bottom:2px solid var(--accent);border-right:2px solid var(--accent);}
+  .monitor:hover .frame-corner{box-shadow:0 0 12px rgba(213,0,255,.5);}
 
   .hosting-status{position:absolute;inset:0;display:flex;flex-direction:column;
     align-items:center;justify-content:center;padding:30px;text-align:center;}
-  .hosting-dot{width:90px;height:90px;border-radius:50%;
-    background:var(--hosting-color,var(--green));position:relative;margin-bottom:28px;
+  .hosting-dot-wrap{position:relative;width:150px;height:150px;margin-bottom:32px;
+    display:flex;align-items:center;justify-content:center;}
+  .hosting-ring-outer{position:absolute;inset:0;border-radius:50%;
+    border:1px dashed rgba(213,0,255,.30);
+    animation:hostingSpin 30s linear infinite;}
+  .hosting-ring-outer::before,
+  .hosting-ring-outer::after{content:'';position:absolute;background:rgba(213,0,255,.55);}
+  .hosting-ring-outer::before{top:50%;left:4%;width:92%;height:1px;transform:translateY(-50%);}
+  .hosting-ring-outer::after{left:50%;top:4%;height:92%;width:1px;transform:translateX(-50%);}
+  .hosting-ring-pulse{position:absolute;inset:20px;border-radius:50%;
+    border:2px solid var(--hosting-color,var(--green));
+    opacity:.35;animation:hostingRing 2.4s ease-in-out infinite;}
+  .hosting-dot{position:relative;width:78px;height:78px;border-radius:50%;
+    background:var(--hosting-color,var(--green));z-index:1;
     box-shadow:0 0 30px var(--hosting-color,var(--green));
-    animation:hostingPulse 2s ease-in-out infinite;}
-  .hosting-dot::after{content:'';position:absolute;inset:-20px;border-radius:50%;
-    border:2px solid var(--hosting-color,var(--green));opacity:.3;
-    animation:hostingRing 2s ease-in-out infinite;}
-  @keyframes hostingPulse{0%,100%{transform:scale(1);}50%{transform:scale(1.05);}}
-  @keyframes hostingRing{0%{transform:scale(1);opacity:.4;}100%{transform:scale(1.4);opacity:0;}}
+    animation:hostingPulse 2.4s ease-in-out infinite;}
+  @keyframes hostingSpin{to{transform:rotate(360deg);}}
+  @keyframes hostingPulse{0%,100%{transform:scale(1);}50%{transform:scale(1.06);}}
+  @keyframes hostingRing{0%{transform:scale(.9);opacity:.5;}100%{transform:scale(1.5);opacity:0;}}
   .hosting-label{font-family:'JetBrains Mono',monospace;font-size:10px;
     letter-spacing:4px;color:var(--muted);text-transform:uppercase;margin-bottom:12px;}
   .hosting-text{font-size:clamp(15px,1.7vw,20px);font-weight:900;color:#fff;
@@ -771,6 +788,10 @@
       </div>
 
       <div class="monitor">
+        <div class="frame-corner fc-tl"></div>
+        <div class="frame-corner fc-tr"></div>
+        <div class="frame-corner fc-bl"></div>
+        <div class="frame-corner fc-br"></div>
         <div class="monitor-head">
           <span>RubixWorld // Network</span>
           <span class="live">Live</span>
@@ -778,7 +799,11 @@
         <div class="monitor-body">
           <div class="label">RW // HOSTING MONITOR</div>
           <div class="hosting-status" id="hostingStatus">
-            <div class="hosting-dot" id="hostingDot"></div>
+            <div class="hosting-dot-wrap">
+              <div class="hosting-ring-outer"></div>
+              <div class="hosting-ring-pulse"></div>
+              <div class="hosting-dot" id="hostingDot"></div>
+            </div>
             <div class="hosting-label">Состояние хостинга</div>
             <div class="hosting-text" id="hostingText">Работа в штатном режиме</div>
           </div>
@@ -2234,9 +2259,9 @@ function applyDev(){
 }
 function applyHostingStatus(){
   const state = HOSTING_STATES[S.hostingStatus] || HOSTING_STATES.normal;
-  const dot = document.getElementById('hostingDot');
+  const wrap = document.querySelector('.hosting-status');
   const txt = document.getElementById('hostingText');
-  if(dot) dot.style.setProperty('--hosting-color', state.color);
+  if(wrap) wrap.style.setProperty('--hosting-color', state.color);
   if(txt) txt.textContent = state.text;
 }
 function applySettings(){
@@ -2739,6 +2764,34 @@ supa.auth.onAuthStateChange((_event, session) => {
   updateAuthUI();
   updateSaveBtnVisibility();
 });
+
+// ================== PARALLAX на мониторе ==================
+(function(){
+  // Только для мыши, на тачах не работает
+  if(!window.matchMedia('(pointer:fine)').matches) return;
+  const hero = document.querySelector('.hero');
+  const monitor = document.querySelector('.monitor');
+  if(!hero || !monitor) return;
+  monitor.style.willChange = 'transform';
+  let tx = 0, ty = 0, cx = 0, cy = 0;
+  hero.addEventListener('mousemove', (e) => {
+    const r = hero.getBoundingClientRect();
+    const x = (e.clientX - r.left) / r.width - 0.5;
+    const y = (e.clientY - r.top) / r.height - 0.5;
+    tx = x * 16;
+    ty = y * 16;
+  });
+  hero.addEventListener('mouseleave', () => { tx = 0; ty = 0; });
+  function loop(){
+    cx += (tx - cx) * 0.08;
+    cy += (ty - cy) * 0.08;
+    if(Math.abs(cx) > 0.05 || Math.abs(cy) > 0.05){
+      monitor.style.transform = 'translate3d(' + cx.toFixed(2) + 'px,' + cy.toFixed(2) + 'px,0)';
+    }
+    requestAnimationFrame(loop);
+  }
+  loop();
+})();
 
 })();
 </script>
