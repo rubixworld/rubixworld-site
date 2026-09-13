@@ -45,6 +45,8 @@
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://ivxbavtknemozxyvtzny.supabase.co" crossorigin>
+<link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 <link id="dynFavicon" rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' fill='%230a0708'/><text x='50%25' y='54%25' font-size='34' font-family='sans-serif' font-weight='900' fill='%23D500FF' text-anchor='middle' dominant-baseline='middle'>RW</text></svg>">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -1641,13 +1643,13 @@
       </div>
 
       <h2 class="sec-title" style="font-size:20px;margin:40px 0 18px;">Discord сервер</h2>
-      <div class="discord-widget-wrap" id="discordWidgetWrap">
-        <iframe id="discordWidget"
-          src="https://discord.com/widget?id=1542223655680081974&theme=dark"
-          allowtransparency="true" frameborder="0"
-          sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"
-          loading="lazy" title="Discord Widget"></iframe>
-      </div>
+<div class="discord-widget-wrap" id="discordWidgetWrap">
+  <iframe id="discordWidget"
+    data-src="https://discord.com/widget?id=1542223655680081974&theme=dark"
+    allowtransparency="true" frameborder="0"
+    sandbox="allow-popups allow-popups-to-escape-sandbox allow-scripts"
+    loading="lazy" title="Discord Widget"></iframe>
+</div>
     </main>
   </div>
 
@@ -3149,6 +3151,18 @@ function goTo(name, push){
   if(name === 'news'){ loadNews(); }
   if(name === 'donate'){ loadProducts(); loadPurchases(); }
   if(name === 'donateAdmin'){ renderAdminProducts(); }
+  if(name === 'info'){ loadDiscordWidget(); }
+}
+
+// Ленивая подгрузка Discord-виджета — только при первом открытии /info
+function loadDiscordWidget(){
+  const wif = document.getElementById('discordWidget');
+  if(!wif) return;
+  const desired = wif.dataset.src;
+  if(!desired) return;
+  // Если уже загружен с нужным URL — второй раз не грузим
+  if(wif.src === desired) return;
+  wif.src = desired;
 }
 document.getElementById('burger').addEventListener('click', () => {
   document.getElementById('menu').classList.toggle('open');
