@@ -48,7 +48,8 @@
 <link rel="preconnect" href="https://ivxbavtknemozxyvtzny.supabase.co" crossorigin>
 <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
-<link id="dynFavicon" rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' fill='%230a0708'/><text x='50%25' y='54%25' font-size='34' font-family='sans-serif' font-weight='900' fill='%23D500FF' text-anchor='middle' dominant-baseline='middle'>RW</text></svg>">
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="apple-touch-icon" href="favicon.png">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style id="rwLiveVars"></style>
 <style id="rwCustomCSS"></style>
@@ -86,10 +87,11 @@
     display:flex;justify-content:space-between;align-items:center;}
   .brand{display:flex;align-items:center;gap:14px;text-decoration:none;color:var(--text);
     background:none;border:none;cursor:pointer;font-family:inherit;}
-  .brand-box{border:2px solid var(--accent);color:var(--accent);font-weight:900;
-    font-size:13px;letter-spacing:1px;padding:3px 6px;line-height:1;
-    transition:.2s;user-select:none;}
-  .brand:hover .brand-box{box-shadow:0 0 14px rgba(213,0,255,.5);}
+.brand-box{display:inline-flex;align-items:center;justify-content:center;
+  width:38px;height:38px;transition:.2s;user-select:none;}
+.brand-box img{width:100%;height:100%;object-fit:contain;display:block;
+  filter:drop-shadow(0 0 4px rgba(213,0,255,.35));transition:.2s;}
+.brand:hover .brand-box img{filter:drop-shadow(0 0 12px rgba(213,0,255,.75));}
   .brand-name{font-weight:900;font-size:15px;letter-spacing:3px;}
   .nav-links{display:flex;align-items:center;gap:32px;list-style:none;}
   .nav-links a{color:var(--text);text-decoration:none;font-size:12px;font-weight:700;
@@ -347,8 +349,9 @@
     text-decoration:none;color:inherit;transition:.25s;}
   .social-card:hover{border-color:var(--accent);background:rgba(213,0,255,.04);transform:translateY(-3px);}
   .social-card .social-icon{width:44px;height:44px;display:flex;align-items:center;
-    justify-content:center;font-size:22px;flex-shrink:0;
-    border:1px solid var(--border-2);transition:.25s;}
+    justify-content:center;flex-shrink:0;
+    border:1px solid var(--border-2);transition:.25s;overflow:hidden;padding:7px;}
+  .social-card .social-icon img{width:100%;height:100%;object-fit:contain;display:block;}
   .social-card:hover .social-icon{border-color:var(--accent);}
   .social-card .social-name{font-size:15px;font-weight:800;color:#fff;letter-spacing:.5px;line-height:1.2;}
   .social-card .social-sub{font-family:'JetBrains Mono',monospace;font-size:10px;
@@ -487,6 +490,7 @@
     border:1px solid var(--border-2);color:#c9c2c4;text-decoration:none;
     font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:2px;
     text-transform:uppercase;transition:.2s;}
+.mnt-links a img{width:14px;height:14px;object-fit:contain;display:block;}
   .mnt-links a:hover{border-color:var(--accent);color:#fff;background:rgba(213,0,255,.06);}
   .mnt-btn{display:inline-flex;align-items:center;gap:10px;background:var(--grad);
     border:none;color:#fff;padding:15px 28px;font-family:inherit;font-size:12px;
@@ -741,12 +745,13 @@
     text-decoration:none;color:#fff;
     background:none;border:none;font-family:inherit;
   }
-  .donate-logo .badge{
-    border:2px solid var(--accent);color:var(--accent);
-    font-weight:900;font-size:13px;letter-spacing:1px;
-    padding:4px 8px;line-height:1;transition:.2s;
-  }
-  .donate-logo:hover .badge{box-shadow:0 0 14px rgba(213,0,255,.5);}
+.donate-logo .badge{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:36px;height:36px;transition:.2s;
+}
+.donate-logo .badge img{width:100%;height:100%;object-fit:contain;display:block;
+  filter:drop-shadow(0 0 4px rgba(213,0,255,.35));transition:.2s;}
+.donate-logo:hover .badge img{filter:drop-shadow(0 0 12px rgba(213,0,255,.75));}
   .donate-logo .name{
     font-family:'Inter',sans-serif;font-weight:900;
     font-size:14px;letter-spacing:3px;
@@ -996,8 +1001,9 @@
     width:42px;height:42px;border-radius:8px;
     background:rgba(255,255,255,.15);
     display:flex;align-items:center;justify-content:center;
-    font-size:22px;
+    padding:8px;overflow:hidden;
   }
+.donate-social-big .ico img{width:100%;height:100%;object-fit:contain;display:block;}
   .donate-social-big .txt{font-weight:800;font-size:15px;line-height:1.2;}
   .donate-social-big .txt small{display:block;font-size:11px;opacity:.8;font-weight:500;margin-top:2px;}
 
@@ -1268,7 +1274,7 @@
 
   <nav>
     <a href="#home" class="brand" data-page="home">
-      <span class="brand-box" id="logoBadge">RW</span>
+      <span class="brand-box" id="logoBadge"><img src="badge.png" alt="RubixWorld"></span>
       <span class="brand-name" id="brandName">RUBIXWORLD</span>
     </a>
     <button class="burger" id="burger">☰</button>
@@ -1620,21 +1626,21 @@
       <h2 class="sec-title" style="font-size:20px;margin:30px 0 18px;">Серверы проекта</h2>
       <div class="socials-grid">
         <a class="social-card" data-social="discord" href="#" target="_blank" rel="noopener">
-          <div class="social-icon" style="color:#5865F2;">💬</div>
+          <div class="social-icon"><img src="icon-discord.png" alt="Discord"></div>
           <div>
             <div class="social-name">Discord</div>
             <div class="social-sub">Основной чат</div>
           </div>
         </a>
         <a class="social-card" data-social="telegram" href="#" target="_blank" rel="noopener">
-          <div class="social-icon" style="color:#29A9EB;">✈️</div>
+          <div class="social-icon"><img src="icon-telegram.png" alt="Telegram"></div>
           <div>
             <div class="social-name">Telegram</div>
             <div class="social-sub">Канал проекта</div>
           </div>
         </a>
         <a class="social-card" data-social="vk" href="#" target="_blank" rel="noopener">
-          <div class="social-icon" style="color:#0077FF;">🅥</div>
+          <div class="social-icon"><img src="icon-vk.png" alt="ВКонтакте"></div>
           <div>
             <div class="social-name">ВКонтакте</div>
             <div class="social-sub">Сообщество</div>
@@ -2173,7 +2179,7 @@
   <div class="page" id="page-donate">
     <div class="donate-topbar">
       <button class="donate-logo" id="donateLogoBtn">
-        <span class="badge">RW</span>
+        <span class="badge"><img src="badge.png" alt="RubixWorld"></span>
         <span class="name">RUBIXWORLD</span>
       </button>
       <div class="donate-nav">
@@ -2223,14 +2229,14 @@
       <div class="donate-socials-grid">
         <a class="donate-social-big vk" data-social="vk" target="_blank" rel="noopener">
           <span class="left">
-            <span class="ico">🅥</span>
+            <span class="ico"><img src="icon-vk.png" alt="ВКонтакте"></span>
             <span class="txt">Мы во ВКонтакте<small>Сообщество проекта</small></span>
           </span>
           <span style="font-size:20px;">→</span>
         </a>
         <a class="donate-social-big discord" data-social="discord" target="_blank" rel="noopener">
           <span class="left">
-            <span class="ico">💬</span>
+            <span class="ico"><img src="icon-discord.png" alt="Discord"></span>
             <span class="txt">Мы в Discord<small>Основной чат</small></span>
           </span>
           <span style="font-size:20px;">→</span>
@@ -2459,10 +2465,8 @@
         </div>
 
         <div class="adm-card">
-          <div class="adm-card-title"><span class="num">08</span> Логотип</div>
-          <div class="adm-field"><label class="adm-label">Текст в бейдже</label><input class="adm-input" id="inLogoBadge" maxlength="6"></div>
-          <div class="adm-field"><label class="adm-label">Название рядом</label><input class="adm-input" id="inBrandName"></div>
-          <div class="adm-field"><label class="adm-label">Favicon</label><input class="adm-input" id="inFavicon" maxlength="3"></div>
+          <div class="adm-card-title"><span class="num">08</span> Название проекта</div>
+          <div class="adm-field"><label class="adm-label">Название рядом с лого</label><input class="adm-input" id="inBrandName"></div>
         </div>
 
         <div class="adm-card">
@@ -2530,7 +2534,7 @@
   <footer>
     <div class="footer-inner">
       <a href="#home" class="brand" data-page="home">
-        <span class="brand-box">RW</span>
+        <span class="brand-box"><img src="badge.png" alt="RubixWorld"></span>
         <span class="brand-name">RUBIXWORLD</span>
       </a>
       <span class="copy" id="footerCopy">© 2026 RubixWorld // Minecraft Server</span>
@@ -2547,9 +2551,9 @@
     <p class="mnt-sub" id="mntTime" style="margin-top:-14px;color:var(--yellow);font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:2px;text-transform:uppercase;"></p>
     <div class="mnt-progress"><i></i></div>
     <div class="mnt-links">
-      <a data-social="discord" href="#" target="_blank" rel="noopener">💬 Discord</a>
-      <a data-social="telegram" href="#" target="_blank" rel="noopener">✈️ Telegram</a>
-      <a data-social="vk" href="#" target="_blank" rel="noopener">🅥 VK</a>
+      <a data-social="discord" href="#" target="_blank" rel="noopener"><img src="icon-discord.png" alt=""> Discord</a>
+      <a data-social="telegram" href="#" target="_blank" rel="noopener"><img src="icon-telegram.png" alt=""> Telegram</a>
+      <a data-social="vk" href="#" target="_blank" rel="noopener"><img src="icon-vk.png" alt=""> VK</a>
     </div>
     <button class="mnt-btn" id="mntReload">⟳ Обновить страницу</button>
     <div class="mnt-foot">RubixWorld // Попробуйте зайти позже</div>
@@ -3642,9 +3646,7 @@ function applyHostingStatus(){
 }
 function applySettings(){
   document.getElementById('brandName').textContent = S.brandName || 'RUBIXWORLD';
-  document.getElementById('logoBadge').textContent = S.logoBadge || 'RW';
   document.querySelectorAll('footer .brand-name').forEach(el => el.textContent = S.brandName || 'RUBIXWORLD');
-  document.querySelectorAll('footer .brand-box').forEach(el => el.textContent = S.logoBadge || 'RW');
 
   document.getElementById('ipValue').textContent = S.ip;
   document.getElementById('guideIP').textContent = S.ip;
@@ -3721,12 +3723,6 @@ function applySettings(){
     if(url){ el.href = url; el.style.opacity = '1'; el.style.pointerEvents = 'auto'; }
     else { el.href = '#'; el.style.opacity = '.5'; }
   });
-
-  const fc = document.getElementById('dynFavicon');
-  if(fc){
-    const text = (S.favicon || 'RW').slice(0,3);
-    fc.href = "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' fill='%230a0708'/><text x='50%25' y='54%25' font-size='"+(text.length>2?24:34)+"' font-family='sans-serif' font-weight='900' fill='%23D500FF' text-anchor='middle' dominant-baseline='middle'>"+text+"</text></svg>";
-  }
 
   const wid = document.getElementById('discordWidgetWrap');
   const wif = document.getElementById('discordWidget');
@@ -3947,8 +3943,8 @@ function bindInput(id, key){
 ['inProjectName:projectName','inIP:ip','inProjectStatus:projectStatus',
  'inProjectStatusCustom:projectStatusCustom','inVerMin:verMin','inVerMax:verMax',
  'inVerRec:verRec','inMode:mode','inDiscord:discord','inTelegram:telegram',
- 'inVK:vk','inWelcome:welcome','inLogoBadge:logoBadge','inBrandName:brandName',
- 'inFavicon:favicon','inServerStatus:serverStatus',
+ 'inVK:vk','inWelcome:welcome','inBrandName:brandName',
+ 'inServerStatus:serverStatus',
  'inMaintMsg:maintMsg','inMaintTime:maintTime','inDiscordWidgetId:discordWidgetId',
  'inHostingStatus:hostingStatus','inOnlineMode:onlineMode'].forEach(pair => {
   const p = pair.split(':'); bindInput(p[0], p[1]);
