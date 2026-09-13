@@ -45,7 +45,7 @@
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 <link id="dynFavicon" rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' fill='%230a0708'/><text x='50%25' y='54%25' font-size='34' font-family='sans-serif' font-weight='900' fill='%23D500FF' text-anchor='middle' dominant-baseline='middle'>RW</text></svg>">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style id="rwLiveVars"></style>
@@ -2519,7 +2519,8 @@ function esc(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, m => ({'&
 function formatDate(iso){
   try{
     const d = new Date(iso);
-    return d.toLocaleDateString('ru-RU', {day:'2-digit', month:'long', year:'numeric'});
+    if(isNaN(d.getTime())) return iso;
+    return d.toLocaleDateString('ru-RU', {day:'numeric', month:'long', year:'numeric'});
   }catch(e){ return iso; }
 }
 function todayISO(){
@@ -2827,7 +2828,7 @@ function renderPurchases(){
     return;
   }
   grid.innerHTML = PURCHASES.map(p => {
-    const product = PRODUCTS.find(x => x.id === p.product_id);
+    const product = PRODUCTS.find(x => String(x.id) === String(p.product_id));
     const from = product ? product.color_from : '#D500FF';
     const to = product ? product.color_to : '#00E5FF';
     const grad = 'linear-gradient(135deg, ' + from + ', ' + to + ')';
@@ -3136,7 +3137,7 @@ function goTo(name, push){
   const fcopy = document.getElementById('footerCopy');
   if(fcopy) fcopy.textContent = footerText[name];
   setActiveNav(name);
-  if(push !== false){ window.scrollTo({top:0, behavior:'instant' in window ? 'instant' : 'auto'}); }
+  if(push !== false){ window.scrollTo({ top: 0, behavior: 'auto' }); }
   const menu = document.getElementById('menu');
   if(menu) menu.classList.remove('open');
   if(window.location.hash !== '#' + name){
@@ -3409,15 +3410,22 @@ function applySettings(){
     fetchServerStatus().then(data => {
       const el = document.getElementById('homeOnline');
       if(!el) return;
-      if(data && data.online && data.players && typeof data.players.online === 'number'){
-        el.textContent = data.players.online;
+      const n = data && data.players ? Number(data.players.online) : NaN;
+      if(data && data.online && Number.isFinite(n) && n >= 0){
+        el.textContent = Math.floor(n);
       } else {
         el.textContent = '—';
       }
     });
   } else {
     if(onlineField) onlineField.style.display = '';
-    document.getElementById('homeOnline').textContent = S.onlineCount || '—';
+    const el = document.getElementById('homeOnline');
+    const n = Number(S.onlineCount);
+    if(S.onlineCount === '' || !Number.isFinite(n) || n < 0){
+      el.textContent = '—';
+    } else {
+      el.textContent = Math.floor(n);
+    }
   }
 
   const ps = S.projectStatus === 'custom' ? (S.projectStatusCustom || '—') : S.projectStatus;
@@ -3665,11 +3673,28 @@ function bindInput(id, key){
  'inProjectStatusCustom:projectStatusCustom','inVerMin:verMin','inVerMax:verMax',
  'inVerRec:verRec','inMode:mode','inDiscord:discord','inTelegram:telegram',
  'inVK:vk','inWelcome:welcome','inLogoBadge:logoBadge','inBrandName:brandName',
- 'inFavicon:favicon','inOnlineCount:onlineCount','inServerStatus:serverStatus',
+ 'inFavicon:favicon','inServerStatus:serverStatus',
  'inMaintMsg:maintMsg','inMaintTime:maintTime','inDiscordWidgetId:discordWidgetId',
  'inHostingStatus:hostingStatus','inOnlineMode:onlineMode'].forEach(pair => {
   const p = pair.split(':'); bindInput(p[0], p[1]);
 });
+
+// Отдельный биндинг для онлайн-счётчика — только числа
+(function(){
+  const el = document.getElementById('inOnlineCount');
+  if(!el) return;
+  el.addEventListener('input', () => {
+    // разрешаем пустое поле и любые целые числа (включая отрицательные — но они будут отфильтрованы при рендере)
+    const v = el.value;
+    if(v === '' || /^-?\d+$/.test(v)){
+      S.onlineCount = v;
+      applySettings();
+    } else {
+      // если ввели буквы — откатываем поле к последнему валидному значению
+      el.value = S.onlineCount || '';
+    }
+  });
+})();
 ['inAccent:accent','inAccent2:accent2','inCyan:cyan','inBg:bg'].forEach(pair => {
   const p = pair.split(':');
   const el = document.getElementById(p[0]);
@@ -3846,8 +3871,10 @@ document.addEventListener('keydown', (e) => {
     document.getElementById('paymentOverlay')?.classList.remove('show');
   }
   if((e.key === 'f' || e.key === 'F') && !e.ctrlKey && !e.metaKey && !e.altKey){
-    const tag = (document.activeElement && document.activeElement.tagName) || '';
-    if(tag !== 'INPUT' && tag !== 'TEXTAREA' && !document.activeElement.isContentEditable){
+    const ae = document.activeElement;
+    const tag = ae ? ae.tagName : '';
+    const isEditable = !!(ae && ae.isContentEditable);
+    if(tag !== 'INPUT' && tag !== 'TEXTAREA' && !isEditable){
       if(devPanel.classList.contains('open')){
         e.preventDefault();
         document.body.classList.toggle('preview-mode');
@@ -4012,10 +4039,12 @@ let payRelease  = null;
   routeFromHash();
   updateSaveBtnVisibility();
 
-  setTimeout(() => {
-    document.getElementById('loadingOverlay').classList.add('hide');
-  }, 400);
-})();
+  const overlay = document.getElementById('loadingOverlay');
+  if(overlay){
+    overlay.classList.add('hide');
+    // удаляем из DOM через 500 мс — чтобы transition (opacity .4s) успел отработать
+    setTimeout(() => overlay.remove(), 500);
+  }
 
 supa.auth.onAuthStateChange((_event, session) => {
   USER = session ? session.user : null;
