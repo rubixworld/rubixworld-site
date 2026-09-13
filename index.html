@@ -4,6 +4,45 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>RubixWorld — Minecraft Server</title>
+<!-- =================== SEO =================== -->
+<meta name="description" content="RubixWorld — Minecraft-сервер с дружным комьюнити, плагинами и активной администрацией. IP: rubixworld.mclan.ru. Рекомендованная версия: 1.20.1.">
+<meta name="keywords" content="minecraft, сервер, rubixworld, майнкрафт, mclan, java edition, гриферский сервер">
+<meta name="author" content="RubixWorld">
+<meta name="theme-color" content="#0a0708">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://rubixworld.github.io/rubixworld-site/">
+
+<!-- =================== Open Graph (VK, Telegram, Discord) =================== -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="RubixWorld">
+<meta property="og:locale" content="ru_RU">
+<meta property="og:title" content="RubixWorld — Minecraft Server">
+<meta property="og:description" content="Официальный портал Minecraft-сервера RubixWorld. IP: rubixworld.mclan.ru.">
+<meta property="og:url" content="https://rubixworld.github.io/rubixworld-site/">
+<meta property="og:image" content="https://rubixworld.github.io/rubixworld-site/og-banner.png">
+<meta property="og:image:width" content="1920">
+<meta property="og:image:height" content="1080">
+<meta property="og:image:alt" content="RubixWorld — Minecraft Server">
+
+<!-- =================== Twitter / X =================== -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="RubixWorld — Minecraft Server">
+<meta name="twitter:description" content="Официальный портал Minecraft-сервера RubixWorld.">
+<meta name="twitter:image" content="https://rubixworld.github.io/rubixworld-site/og-banner.png">
+
+<!-- =================== Schema.org =================== -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "VideoGame",
+  "name": "RubixWorld",
+  "url": "https://rubixworld.github.io/rubixworld-site/",
+  "description": "Minecraft-сервер RubixWorld",
+  "gamePlatform": "Minecraft Java Edition",
+  "playMode": "MultiPlayer",
+  "inLanguage": "ru"
+}
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
@@ -2607,8 +2646,20 @@ function renderAdminNews(){
 async function uploadImages(files){
   if(!files || !files.length) return [];
   const urls = [];
+  const MAX_FILE_SIZE = 5 * 1024 * 1024;
+  const ALLOWED_TYPES = ['image/jpeg','image/png','image/webp','image/gif'];
+
   for(const file of files){
-    const safeName = Date.now() + '_' + file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
+    if(!ALLOWED_TYPES.includes(file.type)){
+      console.warn('skip: bad type', file.name, file.type);
+      continue;
+    }
+    if(file.size > MAX_FILE_SIZE){
+      console.warn('skip: too big', file.name, file.size);
+      continue;
+    }
+    const safeName = Date.now() + '_' + Math.random().toString(36).slice(2,8) + '_'
+                   + file.name.replace(/[^a-zA-Z0-9._-]/g, '_').slice(0, 60);
     const { error } = await supa.storage.from(STORAGE_BUCKET).upload(safeName, file, { upsert: false });
     if(error){ console.error('upload error:', error); toast('Ошибка загрузки фото: ' + error.message, true); continue; }
     const { data } = supa.storage.from(STORAGE_BUCKET).getPublicUrl(safeName);
@@ -2622,7 +2673,53 @@ async function publishNews(){
   const body = document.getElementById('newsBody').value.trim();
   const dateVal = document.getElementById('newsDate').value;
   const files = document.getElementById('newsImages').files;
+  // --- Валидация заголовка ---
   if(!title || !body){ toast('Заполните заголовок и текст', true); return; }
+  if(title.length > 150){
+    toast('Заголовок слишком длинный (максимум 150 символов)', true);
+    return;
+  }
+  if(body.length > 20000){
+    toast('Текст новости слишком длинный (максимум 20 000 символов)', true);
+    return;
+  }
+
+  // --- Валидация даты ---
+  if(dateVal){
+    const d = new Date(dateVal + 'T12:00:00');
+    if(isNaN(d.getTime())){
+      toast('Некорректная дата', true);
+      return;
+    }
+    const now = Date.now();
+    const maxFuture = now + 365 * 24 * 60 * 60 * 1000; // +1 год
+    if(d.getTime() > maxFuture){
+      toast('Дата не может быть больше чем на год в будущем', true);
+      return;
+    }
+  }
+
+  // --- Валидация файлов ---
+  const MAX_FILES = 6;
+  const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5 МБ
+  const ALLOWED_TYPES = ['image/jpeg','image/png','image/webp','image/gif'];
+  if(files && files.length > MAX_FILES){
+    toast('Максимум ' + MAX_FILES + ' картинок за раз', true);
+    return;
+  }
+  if(files){
+    for(let i = 0; i < files.length; i++){
+      const f = files[i];
+      if(!ALLOWED_TYPES.includes(f.type)){
+        toast('Формат "' + f.name + '" не поддерживается (JPG, PNG, WEBP, GIF)', true);
+        return;
+      }
+      if(f.size > MAX_FILE_SIZE){
+        toast('Файл "' + f.name + '" больше 5 МБ', true);
+        return;
+      }
+    }
+  }
 
   const btn = document.getElementById('btnPublishNews');
   btn.disabled = true;
@@ -2650,10 +2747,34 @@ async function publishNews(){
 }
 async function deleteNews(id){
   if(!USER){ toast('Войдите как администратор', true); return; }
-  if(!confirm('Удалить этот пост?')) return;
+  if(!confirm('Удалить этот пост? Изображения тоже будут удалены.')) return;
+
+  // 1) Находим пост, чтобы узнать, какие картинки удалять из Storage
+  const post = NEWS_CACHE.find(p => String(p.id) === String(id));
+  const paths = [];
+  if(post && Array.isArray(post.images)){
+    post.images.forEach(url => {
+      // вытаскиваем путь из публичного URL
+      // .../storage/v1/object/public/news-images/<путь>
+      const m = url.match(/\/news-images\/(.+)$/);
+      if(m && m[1]) paths.push(decodeURIComponent(m[1]));
+    });
+  }
+
+  // 2) Удаляем картинки из Storage (если есть)
+  if(paths.length){
+    const { error: stErr } = await supa.storage.from(STORAGE_BUCKET).remove(paths);
+    if(stErr){
+      console.warn('storage remove failed:', stErr);
+      // не прерываем — пост всё равно удалим
+    }
+  }
+
+  // 3) Удаляем сам пост
   const { error } = await supa.from(NEWS_TABLE).delete().eq('id', id);
   if(error){ toast('Ошибка: ' + error.message, true); return; }
-  toast('Пост удалён');
+
+  toast('Пост удалён' + (paths.length ? ' (фото тоже)' : ''));
   await loadNews();
 }
 
@@ -2782,17 +2903,87 @@ async function saveDonateProduct(){
   const id = document.getElementById('dpId').value.trim();
   const name = document.getElementById('dpName').value.trim();
   if(!name){ toast('Введите название', true); return; }
+
+  // --- Валидация названия ---
+  if(name.length < 2){
+    toast('Название должно быть минимум 2 символа', true);
+    return;
+  }
+  if(name.length > 120){
+    toast('Название слишком длинное (максимум 120 символов)', true);
+    return;
+  }
+
+  // --- Валидация цены ---
+  const priceRaw = document.getElementById('dpPrice').value.trim();
+  const price = Number(priceRaw);
+  if(!Number.isFinite(price) || price < 0){
+    toast('Цена должна быть числом (0 или больше)', true);
+    return;
+  }
+  if(price > 1000000){
+    toast('Цена не может быть больше 1 000 000 ₽', true);
+    return;
+  }
+
+  // --- Валидация URL картинки ---
+  const imageUrl = document.getElementById('dpImage').value.trim();
+  if(imageUrl){
+    if(imageUrl.length > 500){
+      toast('URL картинки слишком длинный (максимум 500 символов)', true);
+      return;
+    }
+    if(!/^https?:\/\//i.test(imageUrl)){
+      toast('URL картинки должен начинаться с http:// или https://', true);
+      return;
+    }
+    try{
+      const u = new URL(imageUrl);
+      if(u.protocol !== 'http:' && u.protocol !== 'https:'){
+        toast('Разрешены только http:// и https://', true);
+        return;
+      }
+    }catch(e){
+      toast('Некорректный URL картинки', true);
+      return;
+    }
+  }
+
+  // --- Валидация описания ---
+  const description = document.getElementById('dpDesc').value.trim();
+  if(description.length > 1000){
+    toast('Описание слишком длинное (максимум 1000 символов)', true);
+    return;
+  }
+
+  // --- Валидация команд ---
+  const commands = document.getElementById('dpCommands').value.trim();
+  if(commands.length > 2000){
+    toast('Слишком много команд (максимум 2000 символов)', true);
+    return;
+  }
+
+  // --- Валидация цветов ---
+  const HEX = /^#[0-9a-f]{6}$/i;
+  const colorFrom = document.getElementById('dpColorFrom').value.trim();
+  const colorTo   = document.getElementById('dpColorTo').value.trim();
+  if(!HEX.test(colorFrom) || !HEX.test(colorTo)){
+    toast('Некорректный цвет (ожидается формат #RRGGBB)', true);
+    return;
+  }
+
   const data = {
     name: name,
-    description: document.getElementById('dpDesc').value.trim(),
-    price: +document.getElementById('dpPrice').value || 0,
+    description: description,
+    price: price,
     category: document.getElementById('dpCategory').value,
-    image_url: document.getElementById('dpImage').value.trim(),
-    color_from: document.getElementById('dpColorFrom').value,
-    color_to: document.getElementById('dpColorTo').value,
-    commands: document.getElementById('dpCommands').value.trim(),
-    sort_order: +document.getElementById('dpSort').value || 0
+    image_url: imageUrl,
+    color_from: colorFrom,
+    color_to: colorTo,
+    commands: commands,
+    sort_order: sort_order
   };
+
   let error;
   if(id){
     ({error} = await supa.from(DONATE_TABLE).update(data).eq('id', id));

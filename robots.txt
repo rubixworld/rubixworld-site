@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /#admin
+Disallow: /#donateAdmin
+
+Sitemap: https://rubixworld.github.io/rubixworld-site/sitemap.xml
