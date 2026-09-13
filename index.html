@@ -2255,9 +2255,9 @@
 </div>
 
 <div class="auth-overlay" id="authOverlay">
-  <div class="auth-modal">
-    <button class="auth-modal-close" id="authClose">✕</button>
-    <h3>// Вход администратора</h3>
+<div class="auth-modal" role="dialog" aria-modal="true" aria-labelledby="authTitle">
+  <button class="auth-modal-close" id="authClose" aria-label="Закрыть окно входа">✕</button>
+  <h3 id="authTitle">// Вход администратора</h3>
     <div class="adm-field">
       <label class="adm-label">Логин</label>
       <input class="adm-input" id="loginInput" type="text" placeholder="dark_esz" autocomplete="username">
@@ -2273,9 +2273,9 @@
 </div>
 
 <div class="cart-overlay" id="cartOverlay">
-  <div class="cart-modal">
-    <button class="cart-close" id="cartClose">✕</button>
-    <h3>// Корзина</h3>
+<div class="cart-modal" role="dialog" aria-modal="true" aria-labelledby="cartTitle">
+  <button class="cart-close" id="cartClose" aria-label="Закрыть корзину">✕</button>
+  <h3 id="cartTitle">// Корзина</h3>
     <div class="cart-items" id="cartItems"></div>
     <div class="cart-total">
       <span>Итого:</span>
@@ -2294,9 +2294,9 @@
 </div>
 
 <div class="payment-overlay" id="paymentOverlay">
-  <div class="payment-modal">
-    <button class="payment-back" id="paymentBack">← Назад в корзину</button>
-    <h3>// Выбор способа оплаты</h3>
+<div class="payment-modal" role="dialog" aria-modal="true" aria-labelledby="paymentTitle">
+  <button class="payment-back" id="paymentBack" aria-label="Вернуться в корзину">← Назад в корзину</button>
+  <h3 id="paymentTitle">// Выбор способа оплаты</h3>
     <div class="payment-grid">
       <button class="payment-method disabled" type="button">
         <span class="ico">💳</span>
@@ -2841,15 +2841,22 @@ function updateAuthUI(){
   }
 }
 function openAuthOverlay(){
-  document.getElementById('authOverlay').classList.add('show');
+  const overlay = document.getElementById('authOverlay');
+  const prev = document.activeElement;
+  overlay.classList.add('show');
   document.getElementById('loginError').textContent = '';
-  setTimeout(() => document.getElementById('loginInput').focus(), 100);
+  setTimeout(() => {
+    authRelease = trapFocus(overlay.querySelector('.auth-modal'), prev);
+  }, 40);
 }
 function closeAuthOverlay(){
-  document.getElementById('authOverlay').classList.remove('show');
+  const overlay = document.getElementById('authOverlay');
+  if(!overlay.classList.contains('show')) return;
+  overlay.classList.remove('show');
   document.getElementById('loginInput').value = '';
   document.getElementById('passwordInput').value = '';
   document.getElementById('loginError').textContent = '';
+  if(authRelease){ authRelease(); authRelease = null; }
 }
 async function doLogin(){
   const loginRaw = document.getElementById('loginInput').value.trim();
@@ -3396,8 +3403,13 @@ document.getElementById('donateScrollBtn')?.addEventListener('click', () => {
   if(anchor) anchor.scrollIntoView({behavior:'smooth', block:'start'});
 });
 document.getElementById('donateCartBtn')?.addEventListener('click', () => {
-  document.getElementById('cartOverlay').classList.add('show');
+  const overlay = document.getElementById('cartOverlay');
+  const prev = document.activeElement;
+  overlay.classList.add('show');
   updateCartUI();
+  setTimeout(() => {
+    cartRelease = trapFocus(overlay.querySelector('.cart-modal'), prev);
+  }, 40);
 });
 document.getElementById('donateLogoBtn')?.addEventListener('click', (e) => {
   if((e.ctrlKey || e.metaKey) && e.shiftKey){
@@ -3410,9 +3422,13 @@ document.getElementById('donateLogoBtn')?.addEventListener('click', (e) => {
 }, true);
 document.getElementById('cartClose')?.addEventListener('click', () => {
   document.getElementById('cartOverlay').classList.remove('show');
+  if(cartRelease){ cartRelease(); cartRelease = null; }
 });
 document.getElementById('cartOverlay')?.addEventListener('click', (e) => {
-  if(e.target === e.currentTarget) e.currentTarget.classList.remove('show');
+  if(e.target === e.currentTarget){
+    e.currentTarget.classList.remove('show');
+    if(cartRelease){ cartRelease(); cartRelease = null; }
+  }
 });
 document.getElementById('cartForm')?.addEventListener('submit', (e) => {
   e.preventDefault();
@@ -3422,12 +3438,25 @@ document.getElementById('cartForm')?.addEventListener('submit', (e) => {
   if(!CART.length){ toast('Корзина пуста', true); return; }
   if(!nick || !email){ toast('Заполните все поля', true); return; }
   if(!agree){ toast('Подтвердите согласие с правилами', true); return; }
+
+  if(cartRelease){ cartRelease(); cartRelease = null; }
   document.getElementById('cartOverlay').classList.remove('show');
-  document.getElementById('paymentOverlay').classList.add('show');
+
+  const payOverlay = document.getElementById('paymentOverlay');
+  payOverlay.classList.add('show');
+  setTimeout(() => {
+    payRelease = trapFocus(payOverlay.querySelector('.payment-modal'), null);
+  }, 40);
 });
 document.getElementById('paymentBack')?.addEventListener('click', () => {
   document.getElementById('paymentOverlay').classList.remove('show');
-  document.getElementById('cartOverlay').classList.add('show');
+  if(payRelease){ payRelease(); payRelease = null; }
+
+  const overlay = document.getElementById('cartOverlay');
+  overlay.classList.add('show');
+  setTimeout(() => {
+    cartRelease = trapFocus(overlay.querySelector('.cart-modal'), null);
+  }, 40);
 });
 document.getElementById('dpSave')?.addEventListener('click', saveDonateProduct);
 document.getElementById('dpReset')?.addEventListener('click', resetDonateForm);
@@ -3743,6 +3772,41 @@ function fallbackCopy(text){
   }
   loop();
 })();
+
+// ================== FOCUS TRAP ДЛЯ МОДАЛОК ==================
+const FOCUSABLE = 'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
+
+function trapFocus(container, prevFocus){
+  if(!container) return () => {};
+  const getFocusables = () => Array.from(container.querySelectorAll(FOCUSABLE))
+    .filter(el => el.offsetParent !== null);
+  const first = getFocusables()[0];
+  if(first) setTimeout(() => first.focus(), 40);
+
+  function onKey(e){
+    if(e.key !== 'Tab') return;
+    const els = getFocusables();
+    if(!els.length){ e.preventDefault(); return; }
+    const firstEl = els[0];
+    const lastEl  = els[els.length - 1];
+    const active  = document.activeElement;
+    if(e.shiftKey && (active === firstEl || !container.contains(active))){
+      e.preventDefault(); lastEl.focus();
+    } else if(!e.shiftKey && active === lastEl){
+      e.preventDefault(); firstEl.focus();
+    }
+  }
+  container.addEventListener('keydown', onKey);
+
+  return function release(){
+    container.removeEventListener('keydown', onKey);
+    if(prevFocus && typeof prevFocus.focus === 'function') prevFocus.focus();
+  };
+}
+
+let authRelease = null;
+let cartRelease = null;
+let payRelease  = null;
 
 // ================== INIT ==================
 (async function init(){
