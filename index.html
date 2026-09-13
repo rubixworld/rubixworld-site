@@ -3668,21 +3668,33 @@ document.getElementById('devSave').addEventListener('click', async () => {
 
 // ================== GLOBAL HOTKEYS ==================
 document.addEventListener('keydown', (e) => {
-  if((e.ctrlKey||e.metaKey) && e.shiftKey && e.code === 'KeyD'){
+  const isMod = e.ctrlKey || e.metaKey;
+
+  // Ctrl+Shift+D — открыть Dev-Builder (для не-админа откроет форму входа)
+  if(isMod && e.shiftKey && e.code === 'KeyD'){
     e.preventDefault();
     if(USER) openDev(); else openAuthOverlay();
+    return;
   }
-  if((e.ctrlKey||e.metaKey) && !e.shiftKey && e.code === 'KeyE'){
+
+  // Все хоткеи ниже работают ТОЛЬКО для авторизованного админа
+  if(!USER) return;
+
+  if(isMod && !e.shiftKey && e.code === 'KeyE'){
     e.preventDefault(); toggleEdit();
+    return;
   }
-  if((e.ctrlKey||e.metaKey) && !e.shiftKey && e.code === 'KeyG'){
+  if(isMod && !e.shiftKey && e.code === 'KeyG'){
     e.preventDefault(); D.grid = !D.grid; applyDev();
+    return;
   }
-  if((e.ctrlKey||e.metaKey) && !e.shiftKey && e.code === 'KeyB'){
+  if(isMod && !e.shiftKey && e.code === 'KeyB'){
     e.preventDefault(); D.borders = !D.borders; applyDev();
+    return;
   }
-  if((e.ctrlKey||e.metaKey) && !e.shiftKey && e.code === 'KeyI'){
+  if(isMod && !e.shiftKey && e.code === 'KeyI'){
     e.preventDefault(); toggleInspect();
+    return;
   }
 });
 
