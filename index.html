@@ -4042,9 +4042,9 @@ let payRelease  = null;
   const overlay = document.getElementById('loadingOverlay');
   if(overlay){
     overlay.classList.add('hide');
-    // удаляем из DOM через 500 мс — чтобы transition (opacity .4s) успел отработать
     setTimeout(() => overlay.remove(), 500);
   }
+})();   // ← ЗДЕСЬ закрывается init
 
 supa.auth.onAuthStateChange((_event, session) => {
   USER = session ? session.user : null;
@@ -4052,7 +4052,7 @@ supa.auth.onAuthStateChange((_event, session) => {
   updateSaveBtnVisibility();
 });
 
-})();
+})();   // ← закрывает внешнюю (function(){ из начала файла
 </script>
 </body>
 </html>
