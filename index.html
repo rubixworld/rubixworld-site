@@ -1431,7 +1431,7 @@
         <div class="step">
           <div class="step-num">ШАГ 03</div>
           <h4>Добавь сервер</h4>
-          <p>Нажми «Добавить сервер» и вставь IP: <code id="guideIP">rubixworld.mclan.ru</code></p>
+          <p>Нажми «Добавить сервер» и вставь IP: <code id="guideIP">загрузка...</code></p>
         </div>
         <div class="step">
           <div class="step-num">ШАГ 04</div>
@@ -3648,8 +3648,11 @@ function applySettings(){
   document.getElementById('brandName').textContent = S.brandName || 'RUBIXWORLD';
   document.querySelectorAll('footer .brand-name').forEach(el => el.textContent = S.brandName || 'RUBIXWORLD');
 
-  document.getElementById('ipValue').textContent = S.ip;
-  document.getElementById('guideIP').textContent = S.ip;
+  const ipText = (S.ip && String(S.ip).trim()) ? String(S.ip).trim() : '—';
+const ipMainEl = document.getElementById('ipValue');
+if(ipMainEl) ipMainEl.textContent = ipText;
+const ipGuideEl = document.getElementById('guideIP');
+if(ipGuideEl) ipGuideEl.textContent = ipText;
 
   // ===== СТАТУС СЕРВЕРА =====
   const SM = {
