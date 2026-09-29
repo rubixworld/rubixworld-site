@@ -213,7 +213,7 @@
   .status-cell .head strong{font-size:18px;font-weight:900;letter-spacing:1px;text-transform:uppercase;}
   .status-cell .sub{font-family:'JetBrains Mono',monospace;font-size:11px;
     letter-spacing:1.5px;color:var(--muted);text-transform:uppercase;padding-left:24px;}
-  .status-cell .big{font-size:22px;font-weight:900;color:#fff;letter-spacing:2px;margin-bottom:8px;}
+  .status-cell .big{font-size:18px;font-weight:900;color:#fff;letter-spacing:1px;margin-bottom:8px;word-break:break-all;}
   .status-cell .k{font-family:'JetBrains Mono',monospace;font-size:11px;
     letter-spacing:2px;color:var(--muted);text-transform:uppercase;}
 
@@ -1361,8 +1361,8 @@
           <div class="k">Игроков онлайн</div>
         </div>
         <div class="status-cell">
-          <div class="big" id="homeProjectStatus">ЗБТ</div>
-          <div class="k">Статус проекта</div>
+          <div class="big" id="homeIP">—</div>
+          <div class="k">IP-адрес сервера</div>
         </div>
       </div>
     </section>
@@ -3709,8 +3709,9 @@ if(ipGuideEl) ipGuideEl.textContent = ipText;
   }
 
   const ps = S.projectStatus === 'custom' ? (S.projectStatusCustom || '—') : S.projectStatus;
-  document.getElementById('homeProjectStatus').textContent = ps;
   document.getElementById('miniProjectStatus').textContent = ps;
+  const homeIPEl = document.getElementById('homeIP');
+  if(homeIPEl) homeIPEl.textContent = (S.ip && String(S.ip).trim()) ? String(S.ip).trim() : '—';
 
   document.getElementById('miniVersion').innerHTML =
     'С версии ' + S.verMin + ' до ' + S.verMax + '<br>' + S.verRec + ' — рекомендовано';
