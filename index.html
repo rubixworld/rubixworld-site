@@ -1431,7 +1431,7 @@
         <div class="step">
           <div class="step-num">ШАГ 03</div>
           <h4>Добавь сервер</h4>
-          <p>Нажми «Добавить сервер» и вставь IP: <code id="guideIP">загрузка...</code></p>
+          <p>Нажми «Добавить сервер» и вставь IP: <code id="guideIP">—</code></p>
         </div>
         <div class="step">
           <div class="step-num">ШАГ 04</div>
@@ -1560,7 +1560,7 @@
       <div class="info-top-row">
         <div class="ip-bar">
           <span class="ip-label">IP-адрес сервера</span>
-          <span class="ip-value" id="ipValue">rubixworld.mclan.ru</span>
+          <span class="ip-value" id="ipValue">—</span>
           <button class="ip-copy" id="ipCopy">Копировать</button>
         </div>
         <div class="status-card">
@@ -1598,7 +1598,7 @@
           <div class="mini-grid">
             <div class="mini">
               <span class="k">Статус проекта</span>
-              <span class="v" id="miniProjectStatus">ЗБТ</span>
+              <span class="v" id="miniProjectStatus">—</span>
             </div>
             <div class="mini">
               <span class="k">Версия Minecraft сервера</span>
@@ -2708,7 +2708,7 @@ const supa = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 // ================== DEFAULTS ==================
 const DEFAULTS = {
   settings:{
-    projectName:'RubixWorld', ip:'rubixworld.mclan.ru',
+    projectName:'RubixWorld', ip:'mc.rubixworld.ru',
     projectStatus:'ЗБТ', projectStatusCustom:'',
     verMin:'1.20', verMax:'26.2', verRec:'1.20.1',
     mode:'Гриферский', grief:true,
@@ -3553,7 +3553,7 @@ const EDITABLE_SELECTOR = [
   '.group-title', '.role-name',
   '.quote-title > span', '.quote-text',
   '.mini .k', '.info-head h2', '.info-head .kicker',
-  '.step h4', '.step p', '.step-num',
+  '.step h4', '.step-num',
   '.social-name', '.social-sub'
 ].join(',');
 const SETTINGS_MANAGED = new Set([
@@ -4064,8 +4064,15 @@ document.getElementById('fileImportJSON').addEventListener('change', (e) => {
 });
 document.getElementById('btnClearContent').addEventListener('click', async () => {
   if(!confirm('Очистить все сохранённые тексты? Откатятся к стандартным.')) return;
+  if(!USER){ toast('Войдите как администратор', true); return; }
   CONTENT = { __v: CONTENT_VERSION };
-  location.reload();
+  const ok = await saveToCloud();
+  if(ok){
+    toast('Тексты очищены');
+    setTimeout(() => location.reload(), 600);
+  } else {
+    toast('Не удалось очистить', true);
+  }
 });
 document.getElementById('btnResetAll').addEventListener('click', () => {
   if(!confirm('Сбросить все настройки к дефолту?')) return;
