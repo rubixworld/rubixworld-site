@@ -498,6 +498,24 @@
   .mnt-btn:hover{filter:brightness(1.15);box-shadow:0 0 25px rgba(213,0,255,.4);}
   .mnt-foot{margin-top:28px;font-family:'JetBrains Mono',monospace;
     font-size:10px;letter-spacing:2px;color:var(--muted-2);text-transform:uppercase;}
+
+  .dl-info-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:32px;}
+  .dl-info{border:1px solid var(--border-2);background:linear-gradient(180deg,#0e0b0c,#0b0809);
+    padding:22px 24px;display:flex;flex-direction:column;min-height:110px;}
+  .dl-info .k{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:2.5px;
+    color:var(--muted-2);text-transform:uppercase;font-weight:600;margin-bottom:12px;}
+  .dl-info .v{font-size:18px;font-weight:900;color:#fff;letter-spacing:.5px;margin-top:auto;word-break:break-all;}
+  .dl-actions{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:32px;}
+  .dl-btn{display:inline-flex;align-items:center;gap:14px;padding:20px 40px;
+    background:var(--grad);color:#fff;border:none;cursor:pointer;text-decoration:none;
+    font-family:inherit;font-weight:800;font-size:15px;letter-spacing:2px;text-transform:uppercase;
+    transition:.2s;box-shadow:0 0 30px rgba(213,0,255,.25);}
+  .dl-btn:hover{filter:brightness(1.15);box-shadow:0 0 40px rgba(213,0,255,.5);
+    transform:translateY(-2px);color:#fff;}
+  .dl-btn .ico{font-size:22px;line-height:1;}
+  .dl-btn .col{display:flex;flex-direction:column;align-items:flex-start;}
+  .dl-btn .sub{display:block;font-size:10px;font-weight:500;letter-spacing:1.5px;
+    opacity:.75;margin-top:3px;font-family:'JetBrains Mono',monospace;}
 	
   /* ================= ADMIN ================= */
   .admin-page{padding:140px 24px 80px;max-width:1100px;margin:0 auto;}
@@ -1285,7 +1303,7 @@
       <li><a href="#rules" data-page="rules">Правила</a></li>
       <li><a href="#news" data-page="news">Новости</a></li>
       <li><a href="#donate" data-page="donate">Магазин</a></li>
-      <li><a href="#play" class="nav-btn" data-play>Играть</a></li>
+      <li><a href="#download" class="nav-btn" data-play>Играть</a></li>
     </ul>
   </nav>
 
@@ -2157,6 +2175,97 @@
       </div>
   </div>
 
+  <!-- ============== DOWNLOAD ============== -->
+  <div class="page" id="page-download">
+    <main class="page-inner narrow">
+      <div class="tab-bar">
+        <a href="#home" class="tab" data-page="home">← Главная</a>
+        <a href="#download" class="tab tab-active">Скачать лаунчер</a>
+      </div>
+      <div class="eyebrow-center">// Download</div>
+      <h1 class="page-title">Скачать</h1>
+      <p class="page-sub">
+        Официальный лаунчер RubixWorld для входа на сервер.<br>
+        Скачай, установи — и играй.
+      </p>
+
+      <div class="dl-info-grid">
+        <div class="dl-info">
+          <span class="k">Версия</span>
+          <span class="v" id="dlVersion">1.0.0</span>
+        </div>
+        <div class="dl-info">
+          <span class="k">Размер</span>
+          <span class="v">~50 МБ</span>
+        </div>
+        <div class="dl-info">
+          <span class="k">Платформа</span>
+          <span class="v">Windows 10/11</span>
+        </div>
+      </div>
+
+      <div class="dl-actions">
+        <a class="dl-btn" href="RubixWorldLauncher.exe" download>
+          <span class="ico">⬇</span>
+          <span class="col">
+            <span>Скачать лаунчер</span>
+            <span class="sub">Windows · .exe</span>
+          </span>
+        </a>
+      </div>
+
+      <div class="info-panel">
+        <div class="info-head">
+          <div class="icon">📦</div>
+          <div>
+            <h2>Как установить</h2>
+            <div class="kicker">Installation Guide</div>
+          </div>
+        </div>
+        <div class="info-body">
+          <div class="mini-grid">
+            <div class="mini"><span class="k">Шаг 1</span><span class="v">Скачай .exe файл</span></div>
+            <div class="mini"><span class="k">Шаг 2</span><span class="v">Запусти установщик</span></div>
+            <div class="mini"><span class="k">Шаг 3</span><span class="v">Авторизуйся</span></div>
+            <div class="mini"><span class="k">Шаг 4</span><span class="v">Играй на сервере</span></div>
+          </div>
+
+          <div class="warn-bar">
+            <span class="w-ico">⚠</span>
+            <span>
+              <b>Важно:</b> если антивирус или Windows SmartScreen ругается на лаунчер — это <b>ложное срабатывание</b>. Нажми «Подробнее» → «Выполнить в любом случае».
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div class="info-panel">
+        <div class="info-head">
+          <div class="icon">❓</div>
+          <div>
+            <h2>Частые проблемы</h2>
+            <div class="kicker">FAQ</div>
+          </div>
+        </div>
+        <div class="info-body">
+          <div class="rules-sub">
+            <div class="rules-sub-title">Лаунчер не запускается</div>
+            <p>Проверь, что установлена <b>Java 17</b> или новее.</p>
+          </div>
+          <div class="rules-sub">
+            <div class="rules-sub-title">Антивирус блокирует</div>
+            <p>Добавь папку с лаунчером в исключения. Правой кнопкой по .exe → «Свойства» → «Разблокировать».</p>
+          </div>
+          <div class="rules-sub">
+            <div class="rules-sub-title">Не подключается к серверу</div>
+            <p>Проверь IP на странице <b>Информация</b>. Если сервер на тех. работах — зайди позже.</p>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+	
   <!-- ============== NEWS ============== -->
   <div class="page" id="page-news">
     <main class="page-inner">
@@ -3362,6 +3471,7 @@ const pages = {
   rules: document.getElementById('page-rules'),
   news: document.getElementById('page-news'),
   donate: document.getElementById('page-donate'),
+  download: document.getElementById('page-download'),
   donateAdmin: document.getElementById('page-donate-admin'),
   admin: document.getElementById('page-admin')
 };
@@ -3370,6 +3480,7 @@ const titles = {
   guide:'Руководство — RubixWorld',
   info:'Информация — RubixWorld',
   rules:'Правила — RubixWorld',
+  download:'Скачать лаунчер — RubixWorld',
   news:'Новости — RubixWorld',
   donate:'Магазин — RubixWorld',
   donateAdmin:'Донат-панель — RubixWorld',
@@ -3380,6 +3491,7 @@ const footerText = {
   guide:'© 2026 RubixWorld // Staff Hierarchy',
   info:'© 2026 RubixWorld // Project Information',
   rules:'© 2026 RubixWorld // Server Rules',
+  download:'© 2026 RubixWorld // Download',
   news:'© 2026 RubixWorld // Project News',
   donate:'© 2026 RubixWorld // Магазин',
   donateAdmin:'© 2026 RubixWorld // Donate Admin',
@@ -3490,11 +3602,7 @@ document.addEventListener('click', (e) => {
   const play = e.target.closest('[data-play]');
   if(play){
     e.preventDefault();
-    goTo('info');
-    setTimeout(() => {
-      const ipBar = document.querySelector('.ip-bar');
-      if(ipBar) ipBar.scrollIntoView({behavior:'smooth', block:'center'});
-    }, 100);
+    goTo('download');
   }
 });
 function routeFromHash(){
