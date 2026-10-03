@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title>RubixWorld Launcher</title>
+<hta:application
+  id="app"
+  applicationname="RubixWorld Launcher"
+  border="thin"
+  caption="yes"
+  maximizebutton="no"
+  minimizebutton="no"
+  scroll="no"
+  showintaskbar="yes"
+  singleinstance="yes"
+  sysmenu="no"
+  windowstate="normal"
+/>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{
+    background:#0a0708;
+    color:#f5f5f5;
+    font-family:'Segoe UI',Tahoma,sans-serif;
+    padding:40px 20px;
+    user-select:none;
+    cursor:default;
+  }
+  .card{
+    max-width:520px;
+    margin:20px auto;
+    border:1px solid #2a1f21;
+    background:#0d0a0b;
+    padding:40px 36px;
+    text-align:center;
+  }
+  .tag{
+    display:inline-block;
+    padding:6px 14px;
+    border:1px solid #e8b23a;
+    color:#e8b23a;
+    font-size:11px;
+    letter-spacing:3px;
+    text-transform:uppercase;
+    margin-bottom:24px;
+    font-family:Consolas,monospace;
+  }
+  h1{
+    font-size:22px;
+    font-weight:900;
+    color:#ffffff;
+    text-transform:uppercase;
+    letter-spacing:1px;
+    margin-bottom:20px;
+    line-height:1.35;
+  }
+  p{
+    color:#c9c2c4;
+    font-size:14px;
+    line-height:1.7;
+    margin-bottom:12px;
+  }
+  .accent{color:#D500FF;font-weight:700;}
+  .btn{
+    display:inline-block;
+    margin-top:24px;
+    padding:14px 36px;
+    background:#D500FF;
+    color:#ffffff;
+    border:none;
+    cursor:pointer;
+    font-family:inherit;
+    font-size:12px;
+    font-weight:800;
+    letter-spacing:2px;
+    text-transform:uppercase;
+  }
+  .btn:hover{background:#E93FFF;}
+  .foot{
+    margin-top:26px;
+    font-size:10px;
+    letter-spacing:2px;
+    color:#5a5254;
+    font-family:Consolas,monospace;
+    text-transform:uppercase;
+  }
+</style>
+</head>
+<body>
+  <div class="card">
+    <div class="tag">RubixWorld Launcher</div>
+    <h1>Вы временно не можете скачать данный лаунчер</h1>
+    <p>Попробуйте позже.</p>
+    <p>Следите за новостями в наших соц-сетях (см. <span class="accent">сайт</span>).</p>
+    <button class="btn" onclick="window.close()">Понятно</button>
+    <div class="foot">RubixWorld // Minecraft Server</div>
+  </div>
+</body>
+</html>
